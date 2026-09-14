@@ -1059,14 +1059,18 @@ html&gt;body{padding:0}&lt;/style&gt;
 #revolucion .r-result{padding:12px 0}
 #revolucion .r-math{padding:12px 0}
 @media(max-width:600px){#revolucion{padding:22px 16px}.app-header{flex-wrap:wrap}#revolucion .r-bottom{grid-template-columns:1fr}#revolucion .r-views&gt;section{padding:0 4px 8px}#revolucion .viz-row{align-items:end}}
+&lt;/style&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css&quot;&gt;&lt;style&gt;
+#revolucion .solid-wrap{position:relative}#revolucion .point-tip{position:absolute;pointer-events:none;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:10px;padding:10px 14px;box-shadow:0 4px 16px #0002;max-width:calc(100% - 30px);z-index:2}
+#revolucion .input-note{color:var(--foreground);font-size:14px;margin:12px 0 20px;opacity:.8}
+#revolucion #rvalues .r-math{overflow-x:auto;padding:14px 2px}#revolucion .katex{font-size:1.08em}#revolucion .viz-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));align-items:end}#revolucion #rkeys{display:flex;flex-wrap:wrap}#revolucion .form-label{font-weight:500}#revolucion .r-formula-label{font-size:13px;margin-top:18px;color:var(--foreground)}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
 &lt;span class=&quot;text-small&quot;&gt;Laboratorio de Cálculo Integral&lt;/span&gt;
 &lt;header class=&quot;app-header&quot;&gt;&lt;div&gt;&lt;h1&gt;Sólidos de revolución&lt;/h1&gt;&lt;p&gt;Discos, arandelas y sumas de Riemann&lt;/p&gt;&lt;/div&gt;&lt;label class=&quot;form-label&quot;&gt;Apariencia&lt;select class=&quot;form-select&quot; id=&quot;rtheme&quot;&gt;&lt;option value=&quot;light&quot;&gt;Blanco&lt;/option&gt;&lt;option value=&quot;dark&quot;&gt;Oscuro&lt;/option&gt;&lt;option value=&quot;light dark&quot;&gt;Automático&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;/header&gt;
 &lt;div class=&quot;viz-controls&quot;&gt;
-&lt;label class=&quot;form-label&quot;&gt;Función f(x)&lt;input class=&quot;form-control&quot; id=&quot;rf&quot; value=&quot;√(x)&quot; aria-label=&quot;Función f de x&quot;&gt;&lt;span id=&quot;rfpreview&quot;&gt;&lt;/span&gt;&lt;/label&gt;
-&lt;label class=&quot;form-label&quot;&gt;Segunda frontera g(x)&lt;input class=&quot;form-control&quot; id=&quot;rg&quot; value=&quot;0&quot; aria-label=&quot;Segunda frontera g de x&quot;&gt;&lt;span id=&quot;rgpreview&quot;&gt;&lt;/span&gt;&lt;/label&gt;
+&lt;label class=&quot;form-label&quot;&gt;&lt;span id=&quot;rflabel&quot;&gt;Función f(x)&lt;/span&gt;&lt;input class=&quot;form-control&quot; id=&quot;rf&quot; value=&quot;√(x)&quot; aria-label=&quot;Función f de x&quot;&gt;&lt;span id=&quot;rfpreview&quot;&gt;&lt;/span&gt;&lt;/label&gt;
+&lt;label class=&quot;form-label&quot;&gt;&lt;span id=&quot;rglabel&quot;&gt;Función g(x)&lt;/span&gt;&lt;input class=&quot;form-control&quot; id=&quot;rg&quot; value=&quot;0&quot; aria-label=&quot;Segunda frontera g de x&quot;&gt;&lt;span id=&quot;rgpreview&quot;&gt;&lt;/span&gt;&lt;/label&gt;
 &lt;/div&gt;
 &lt;details&gt;&lt;summary&gt;Teclado matemático · raíces, potencias y fracciones&lt;/summary&gt;&lt;div class=&quot;viz-row&quot; id=&quot;rkeys&quot; aria-label=&quot;Teclado matemático&quot;&gt;
 &lt;span id=&quot;rtarget&quot; class=&quot;text-small&quot;&gt;Escribir en f(x)&lt;/span&gt;
@@ -1083,10 +1087,10 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-fraction=&quot;true&quot;&gt;Fracción&lt;/button&gt;
 &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-clear=&quot;true&quot;&gt;Borrar&lt;/button&gt;
 &lt;/div&gt;&lt;/details&gt;
-&lt;div class=&quot;viz-row&quot;&gt;
+&lt;div id=&quot;rinputnote&quot; class=&quot;input-note&quot;&gt;Funciones y = f(x) e y = g(x). Los límites corresponden a x.&lt;/div&gt;&lt;div class=&quot;viz-row&quot;&gt;
 &lt;label class=&quot;form-label&quot;&gt;Límite inferior (a)&lt;input class=&quot;form-control&quot; id=&quot;ra&quot; type=&quot;number&quot; value=&quot;0&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Límite superior (b)&lt;input class=&quot;form-control&quot; id=&quot;rb&quot; type=&quot;number&quot; value=&quot;4&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
-&lt;label class=&quot;form-label&quot;&gt;Eje de giro: y =&lt;input class=&quot;form-control&quot; id=&quot;rc&quot; type=&quot;number&quot; value=&quot;0&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
+&lt;label class=&quot;form-label&quot;&gt;Girar alrededor de&lt;select class=&quot;form-select&quot; id=&quot;rorientation&quot;&gt;&lt;option value=&quot;x&quot;&gt;Eje X · horizontal&lt;/option&gt;&lt;option value=&quot;y&quot;&gt;Eje Y · vertical&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label class=&quot;form-label&quot;&gt;&lt;span id=&quot;raxislabel&quot;&gt;Desplazamiento: y =&lt;/span&gt;&lt;input class=&quot;form-control&quot; id=&quot;rc&quot; type=&quot;number&quot; value=&quot;0&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
 &lt;button class=&quot;btn btn-primary&quot; id=&quot;rgo&quot; type=&quot;button&quot;&gt;Actualizar gráfica&lt;/button&gt;
 &lt;/div&gt;
 &lt;div class=&quot;viz-row&quot;&gt;
@@ -1099,7 +1103,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;label class=&quot;form-label&quot;&gt;Particiones: &lt;output id=&quot;rnval&quot;&gt;12&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;rn&quot; type=&quot;range&quot; min=&quot;2&quot; max=&quot;100&quot; value=&quot;12&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Corte seleccionado: &lt;output id=&quot;riout&quot;&gt;6&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;ri&quot; type=&quot;range&quot; min=&quot;1&quot; max=&quot;12&quot; value=&quot;6&quot;&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div class=&quot;r-views&quot;&gt;&lt;section&gt;&lt;h3&gt;Región que gira&lt;/h3&gt;&lt;svg id=&quot;rprofile&quot; role=&quot;img&quot; aria-label=&quot;Funciones f y g, región entre ellas y segmento seleccionado&quot;&gt;&lt;/svg&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Sólido y particiones&lt;/h3&gt;&lt;canvas id=&quot;rsolid&quot; role=&quot;img&quot; aria-label=&quot;Sólido de revolución tridimensional. El corte seleccionado aparece resaltado.&quot;&gt;&lt;/canvas&gt;&lt;/section&gt;&lt;/div&gt;
+&lt;div class=&quot;r-views&quot;&gt;&lt;section&gt;&lt;h3&gt;Región que gira&lt;/h3&gt;&lt;svg id=&quot;rprofile&quot; role=&quot;img&quot; aria-label=&quot;Funciones f y g, región entre ellas y segmento seleccionado&quot;&gt;&lt;/svg&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Sólido y particiones&lt;/h3&gt;&lt;div class=&quot;solid-wrap&quot;&gt;&lt;canvas id=&quot;rsolid&quot; role=&quot;img&quot; aria-label=&quot;Sólido de revolución tridimensional. El corte seleccionado aparece resaltado.&quot;&gt;&lt;/canvas&gt;&lt;div id=&quot;rpointtip&quot; class=&quot;point-tip&quot; role=&quot;status&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;
 &lt;div class=&quot;viz-controls&quot;&gt;
 &lt;label class=&quot;form-label&quot;&gt;Girar vista&lt;input class=&quot;form-range&quot; id=&quot;ryaw&quot; type=&quot;range&quot; min=&quot;-75&quot; max=&quot;75&quot; value=&quot;-24&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Elevar vista&lt;input class=&quot;form-range&quot; id=&quot;rpitch&quot; type=&quot;range&quot; min=&quot;-60&quot; max=&quot;60&quot; value=&quot;22&quot;&gt;&lt;/label&gt;
@@ -1121,22 +1125,17 @@ html&gt;body{padding:0}&lt;/style&gt;
 const root=document.getElementById(&#x27;revolucion&#x27;),el=id=&gt;root.querySelector(&#x27;#r&#x27;+id);let state;
 const fmt=x=&gt;Number(x).toLocaleString(&#x27;es&#x27;,{maximumSignificantDigits:6});
 const normalize=s=&gt;s.replace(/−/g,&#x27;-&#x27;).replace(/[×·]/g,&#x27;*&#x27;).replace(/÷/g,&#x27;/&#x27;).replace(/²/g,&#x27;^2&#x27;).replace(/³/g,&#x27;^3&#x27;).replace(/√/g,&#x27;sqrt&#x27;).replace(/sen\b/g,&#x27;sin&#x27;).replace(/π/g,&#x27;pi&#x27;).replace(/(\d),(\d)/g,&#x27;$1.$2&#x27;);
-const tex=(target,value)=&gt;{
- // MathML is rendered natively. Avoid katex.render(), which rejects quirks-mode hosts.
- try{
-  if(window.katex){
-   const parsed=new DOMParser().parseFromString(katex.renderToString(value,{output:&#x27;mathml&#x27;,throwOnError:true,strict:false,trust:false}),&#x27;text/html&#x27;);
-   const equation=parsed.querySelector(&#x27;math&#x27;);
-   if(equation){target.replaceChildren(document.importNode(equation,true));return;}
-  }
- }catch(error){ /* Formatting must never interrupt the solid or numerical results. */ }
- target.textContent=value.replace(/\\(?:bigl|bigr|left|right|mathrm)/g,&#x27;&#x27;).replace(/\\Delta/g,&#x27;Δ&#x27;).replace(/\\pi/g,&#x27;π&#x27;).replace(/\\approx/g,&#x27;≈&#x27;).replace(/\\sum/g,&#x27;Σ&#x27;).replace(/\\int/g,&#x27;∫&#x27;).replace(/\\,/g,&#x27; &#x27;).replace(/[{}]/g,&#x27;&#x27;);
-};
-function previews(){for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){try{tex(el(id+&#x27;preview&#x27;),id+&#x27;(x)=&#x27;+math.parse(normalize(el(id).value)).toTex());}catch{el(id+&#x27;preview&#x27;).textContent=&#x27;Completa la expresión&#x27;;}}}
+const tex=(target,value)=&gt;{try{if(window.katex){target.innerHTML=katex.renderToString(value,{output:&#x27;htmlAndMathml&#x27;,throwOnError:false,strict:false,trust:false});return;}}catch{}target.textContent=value;};
+const vertical=()=&gt;el(&#x27;orientation&#x27;).value===&#x27;y&#x27;, variable=()=&gt;vertical()?&#x27;y&#x27;:&#x27;x&#x27;;
+const expression=id=&gt;normalize(el(id).value).replace(/\by\b/g,&#x27;x&#x27;);
+const mathText=n=&gt;Number(n).toPrecision(5).replace(/0+$/,&#x27;&#x27;).replace(/\.$/,&#x27;&#x27;);
+let marker=null;
+function syncAxis(){const v=variable();el(&#x27;flabel&#x27;).textContent=&#x27;Función f(&#x27;+v+&#x27;)&#x27;;el(&#x27;glabel&#x27;).textContent=&#x27;Función g(&#x27;+v+&#x27;)&#x27;;el(&#x27;axislabel&#x27;).textContent=&#x27;Desplazamiento: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; =&#x27;;el(&#x27;inputnote&#x27;).textContent=vertical()?&#x27;Introduce x = f(y) y x = g(y). Los límites corresponden a y; no se invierte automáticamente una función de x.&#x27;:&#x27;Introduce y = f(x) e y = g(x). Los límites corresponden a x.&#x27;;for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){el(id).value=el(id).value.replace(vertical()? /\bx\b/g:/\by\b/g,v);el(id).setAttribute(&#x27;aria-label&#x27;,&#x27;Función &#x27;+id+&#x27; de &#x27;+v);}}
+function previews(){for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){try{tex(el(id+&#x27;preview&#x27;),id+&#x27;(&#x27;+variable()+&#x27;)=&#x27;+math.parse(expression(id)).toTex().replace(/\bx\b/g,variable()));}catch{el(id+&#x27;preview&#x27;).textContent=&#x27;Completa la expresión&#x27;;}}}
 let active=el(&#x27;f&#x27;),timer;for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){el(id).onfocus=()=&gt;{active=el(id);el(&#x27;target&#x27;).textContent=&#x27;Escribir en &#x27;+id+&#x27;(x)&#x27;;};el(id).oninput=()=&gt;{previews();clearTimeout(timer);timer=setTimeout(update,550);};}
 el(&#x27;keys&#x27;).onclick=e=&gt;{const b=e.target.closest(&#x27;button&#x27;);if(!b)return;let start=active.selectionStart,end=active.selectionEnd,selected=active.value.slice(start,end),v=b.dataset.insert||&#x27;&#x27;;if(b.dataset.wrap)v=b.dataset.wrap+&#x27;(&#x27;+(selected||&#x27;x&#x27;)+&#x27;)&#x27;;if(b.dataset.power)v=selected?&#x27;(&#x27;+selected+&#x27;)&#x27;+b.dataset.power:b.dataset.power;if(b.dataset.fraction)v=&#x27;(&#x27;+(selected||&#x27;x&#x27;)+&#x27;)/(1)&#x27;;if(b.dataset.clear){active.value=&#x27;&#x27;;active.focus();previews();return;}active.setRangeText(v,start,end,&#x27;end&#x27;);active.focus();if(b.dataset.fraction)active.setSelectionRange(start+v.length-2,start+v.length-1);previews();update();};
 function compile(s){
- s=normalize(s);const node=math.parse(s);
+ s=normalize(s).replace(/\by\b/g,&#x27;x&#x27;);const node=math.parse(s);
  node.traverse(n=&gt;{if(![&#x27;OperatorNode&#x27;,&#x27;ConstantNode&#x27;,&#x27;SymbolNode&#x27;,&#x27;FunctionNode&#x27;,&#x27;ParenthesisNode&#x27;].includes(n.type))throw Error(&#x27;Usa una expresión matemática de una sola variable.&#x27;);if(n.isSymbolNode&amp;&amp;![&#x27;x&#x27;,&#x27;pi&#x27;,&#x27;e&#x27;,&#x27;sin&#x27;,&#x27;cos&#x27;,&#x27;tan&#x27;,&#x27;sqrt&#x27;,&#x27;abs&#x27;,&#x27;exp&#x27;,&#x27;log&#x27;,&#x27;ln&#x27;,&#x27;asin&#x27;,&#x27;acos&#x27;,&#x27;atan&#x27;,&#x27;sinh&#x27;,&#x27;cosh&#x27;].includes(n.name))throw Error(&#x27;Símbolo no admitido: &#x27;+n.name);});
  const code=node.compile();return x=&gt;{const y=code.evaluate({x,ln:Math.log});if(typeof y!==&#x27;number&#x27;||!Number.isFinite(y)||Math.abs(y)&gt;1e6)throw Error(&#x27;La función debe ser real, finita y de magnitud menor que 10⁶ en todo el intervalo.&#x27;);return y;};
 }
@@ -1163,7 +1162,7 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  svg.append(&#x27;rect&#x27;).attr(&#x27;data-chart-frame&#x27;,&#x27;&#x27;).attr(&#x27;x&#x27;,margin.left).attr(&#x27;y&#x27;,margin.top).attr(&#x27;width&#x27;,Math.max(1,pw-margin.left-margin.right)).attr(&#x27;height&#x27;,ph-margin.top-margin.bottom).attr(&#x27;fill&#x27;,&#x27;none&#x27;).attr(&#x27;stroke&#x27;,C.line);
  svg.append(&#x27;g&#x27;).attr(&#x27;transform&#x27;,&#x27;translate(0,&#x27;+(ph-margin.bottom)+&#x27;)&#x27;).call(d3.axisBottom(xs).ticks(pw&lt;400?3:4)).call(g=&gt;g.selectAll(&#x27;path,line&#x27;).attr(&#x27;stroke&#x27;,C.line));
  svg.append(&#x27;g&#x27;).attr(&#x27;transform&#x27;,&#x27;translate(&#x27;+margin.left+&#x27;,0)&#x27;).call(d3.axisLeft(ys).ticks(5)).call(g=&gt;g.selectAll(&#x27;path,line&#x27;).attr(&#x27;stroke&#x27;,C.line));
- svg.append(&#x27;text&#x27;).attr(&#x27;class&#x27;,&#x27;axis-title&#x27;).attr(&#x27;data-axis&#x27;,&#x27;x&#x27;).attr(&#x27;x&#x27;,(pw+margin.left)/2).attr(&#x27;y&#x27;,ph-7).attr(&#x27;text-anchor&#x27;,&#x27;middle&#x27;).text(&#x27;x&#x27;);svg.append(&#x27;text&#x27;).attr(&#x27;class&#x27;,&#x27;axis-title&#x27;).attr(&#x27;data-axis&#x27;,&#x27;y&#x27;).attr(&#x27;x&#x27;,16).attr(&#x27;y&#x27;,ph/2).text(&#x27;y&#x27;);
+ svg.append(&#x27;text&#x27;).attr(&#x27;class&#x27;,&#x27;axis-title&#x27;).attr(&#x27;data-axis&#x27;,&#x27;x&#x27;).attr(&#x27;x&#x27;,(pw+margin.left)/2).attr(&#x27;y&#x27;,ph-7).attr(&#x27;text-anchor&#x27;,&#x27;middle&#x27;).text(variable());svg.append(&#x27;text&#x27;).attr(&#x27;class&#x27;,&#x27;axis-title&#x27;).attr(&#x27;data-axis&#x27;,&#x27;y&#x27;).attr(&#x27;x&#x27;,16).attr(&#x27;y&#x27;,ph/2).text(vertical()?&#x27;x&#x27;:&#x27;y&#x27;);
  svg.append(&#x27;path&#x27;).datum(data).attr(&#x27;d&#x27;,d3.area().x(p=&gt;xs(p.x)).y0(p=&gt;ys(p.g)).y1(p=&gt;ys(p.f))).attr(&#x27;fill&#x27;,C.outer).attr(&#x27;opacity&#x27;,.12);
  svg.append(&#x27;line&#x27;).attr(&#x27;x1&#x27;,xs(s.a)).attr(&#x27;x2&#x27;,xs(s.b)).attr(&#x27;y1&#x27;,ys(s.c)).attr(&#x27;y2&#x27;,ys(s.c)).attr(&#x27;stroke&#x27;,C.fg).attr(&#x27;stroke-dasharray&#x27;,&#x27;5 4&#x27;);
  if(el(&#x27;stack&#x27;).checked)s.parts.forEach((p,i)=&gt;{const f=s.f(p.x),g=s.g(p.x);svg.append(&#x27;rect&#x27;).attr(&#x27;x&#x27;,xs(p.left)).attr(&#x27;y&#x27;,ys(Math.max(f,g))).attr(&#x27;width&#x27;,Math.max(0,xs(p.right)-xs(p.left)-1)).attr(&#x27;height&#x27;,Math.abs(ys(f)-ys(g))).attr(&#x27;fill&#x27;,C.outer).attr(&#x27;opacity&#x27;,i===sel?.45:.15);});
@@ -1174,7 +1173,7 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  const {ctx,w,h}=setup(&#x27;solid&#x27;),yaw=+el(&#x27;yaw&#x27;).value*Math.PI/180,pitch=+el(&#x27;pitch&#x27;).value*Math.PI/180;
  const xmin=Math.min(0,s.a),xmax=Math.max(0,s.b),ymin=Math.min(-s.max,-s.c),ymax=Math.max(s.max,-s.c),midX=(xmin+xmax)/2,midY=(ymin+ymax)/2;
  const scale=Math.min((w-90)/Math.hypot(xmax-xmin,2*s.max),(h-110)/Math.hypot(ymax-ymin,(xmax-xmin)*Math.sin(pitch),2*s.max*Math.sin(pitch)))*.88;
- function xyz(x,y,z){x-=midX;y-=midY;const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+u*scale,h/2-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
+ function xyz(x,y,z){x-=midX;y-=midY;if(vertical()){const temp=x;x=y;y=temp;}const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+u*scale,h/2-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
  function path(points,fill,stroke,alpha=1){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.globalAlpha=alpha;if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=0.7;ctx.stroke();}ctx.globalAlpha=1;}
  const faces=[],K=40,stack=el(&#x27;stack&#x27;).checked;
  const sections=stack?s.parts:Array.from({length:70},(_,j)=&gt;({left:s.a+(s.b-s.a)*j/70,right:s.a+(s.b-s.a)*(j+1)/70}));
@@ -1197,8 +1196,8 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
   }ctx.restore();
  }
  const pad=(xmax-xmin)*.08,yp=(ymax-ymin)*.1;
- line3([[xmin-pad,-s.c,0],[xmax+pad,-s.c,0]],C.fg);label3([xmax+pad,-s.c,0],&#x27;x&#x27;);
- line3([[0,ymin-yp,0],[0,ymax+yp,0]],C.fg);label3([0,ymax+yp,0],&#x27;y&#x27;);
+ line3([[xmin-pad,-s.c,0],[xmax+pad,-s.c,0]],C.fg);label3([xmax+pad,-s.c,0],variable());
+ line3([[0,ymin-yp,0],[0,ymax+yp,0]],C.fg);label3([0,ymax+yp,0],vertical()?&#x27;x&#x27;:&#x27;y&#x27;);
  line3([[0,-s.c,-s.max*1.1],[0,-s.c,s.max*1.1]],C.line);label3([0,-s.c,s.max*1.1],&#x27;z&#x27;);
  for(let j=0;j&lt;=3;j++){const x=xmin+(xmax-xmin)*j/3;line3([[x,-s.c-.04*s.max,0],[x,-s.c+.04*s.max,0]],C.fg);label3([x,-s.c,0],Number(x.toPrecision(3)).toString(),0,24);}
  for(let j=0;j&lt;=2;j++){const y=ymin+(ymax-ymin)*j/2;if(Math.abs(y+s.c)&lt;1e-9)continue;line3([[-pad*.35,y,0],[pad*.35,y,0]],C.fg);const text=Number((y+s.c).toPrecision(3)).toString();label3([0,y,0],text,-ctx.measureText(text).width/2-16,0);}
@@ -1206,9 +1205,12 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  const curve=fn=&gt;Array.from({length:201},(_,j)=&gt;{const x=s.a+(s.b-s.a)*j/200;return[x,fn(x)-s.c,0];});
  line3(curve(s.f),C.curve,3.5);line3(curve(s.g),C.inner,2,[6,3]);
  line3([[q.x,0,0],[q.x,q.R,0]],C.outer,2);line3([[q.x,0,0],[q.x,0,q.r]],C.inner,2);
- ctx.fillStyle=C.fg;ctx.fillText(&#x27;Eje de giro: y = &#x27;+fmt(s.c),14,22);
+ ctx.fillStyle=C.fg;ctx.fillText(&#x27;Eje &#x27;+(vertical()?&#x27;Y&#x27;:&#x27;X&#x27;)+&#x27; · &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),14,22);
  ctx.strokeStyle=C.curve;ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(14,h-18);ctx.lineTo(38,h-18);ctx.stroke();ctx.fillText(&#x27;f(x)&#x27;,44,h-14);ctx.strokeStyle=C.inner;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(100,h-18);ctx.lineTo(124,h-18);ctx.stroke();ctx.setLineDash([]);ctx.fillText(&#x27;g(x)&#x27;,130,h-14);
  paintLabels();
+ const dot=xyz(q.x,s.f(q.x)-s.c,0);marker={px:dot[0],py:dot[1],x:vertical()?s.f(q.x):q.x,y:vertical()?q.x:s.f(q.x)};
+ ctx.beginPath();ctx.arc(dot[0],dot[1],7,0,Math.PI*2);ctx.fillStyle=C.inner;ctx.fill();ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();el(&#x27;pointtip&#x27;).hidden=true;
+
  const cut=setup(&#x27;cut&#x27;),cx=cut.w/2,cy=cut.h/2+8,rad=Math.min(cut.w/2-32,cut.h/2-46),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0,cc=cut.ctx;
  cc.fillStyle=C.fg;cc.fillText(q.r&gt;0?&#x27;Arandela&#x27;:&#x27;Disco&#x27;,12,20);cc.beginPath();cc.arc(cx,cy,R,0,2*Math.PI);if(r&gt;0)cc.arc(cx,cy,r,0,2*Math.PI,true);cc.fillStyle=C.outer;cc.globalAlpha=.22;cc.fill(&#x27;evenodd&#x27;);cc.globalAlpha=1;cc.strokeStyle=C.outer;cc.stroke();
  cc.setLineDash([3,4]);cc.strokeStyle=C.line;cc.lineWidth=1;cc.beginPath();cc.moveTo(cx-rad-12,cy);cc.lineTo(cx+rad+12,cy);cc.moveTo(cx,cy-rad-12);cc.lineTo(cx,cy+rad+12);cc.stroke();cc.setLineDash([]);
@@ -1218,12 +1220,26 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  const sum=s.parts.reduce((v,p)=&gt;v+Math.PI*(p.R*p.R-p.r*p.r)*s.d,0),area=Math.PI*(q.R*q.R-q.r*q.r);
  el(&#x27;compare&#x27;).replaceChildren();for(const [name,t] of [[&#x27;Extremo izquierdo&#x27;,0],[&#x27;Punto medio&#x27;,.5],[&#x27;Extremo derecho&#x27;,1]]){let volume=0;for(let j=0;j&lt;s.parts.length;j++){const r=s.radii(s.a+(j+t)*s.d);volume+=Math.PI*(r.R*r.R-r.r*r.r)*s.d;}const card=document.createElement(&#x27;section&#x27;);card.className=&#x27;card viz-stat&#x27;;const title=document.createElement(&#x27;div&#x27;);title.textContent=name;const value=document.createElement(&#x27;div&#x27;);value.className=&#x27;viz-stat-value&#x27;;tex(value,fmt(volume)+&#x27;\\,\\mathrm{u}^3&#x27;);const error=document.createElement(&#x27;div&#x27;);error.className=&#x27;text-small&#x27;;error.textContent=s.volume?&#x27;Diferencia relativa ≈ &#x27;+fmt(Math.abs(volume-s.volume)/Math.abs(s.volume)*100)+&#x27; %&#x27;:&#x27;Diferencia absoluta: &#x27;+fmt(Math.abs(volume-s.volume));card.append(title,value,error);el(&#x27;compare&#x27;).append(card);}
  cc.fillStyle=C.fg;cc.fillText(&#x27;Vista frontal · escala ampliada&#x27;,12,cut.h-10);
- const rows=[[&#x27;Posición del corte&#x27;,&#x27;x_i^* = &#x27;+fmt(q.x)],[&#x27;Espesor&#x27;,&#x27;\\Delta x = &#x27;+fmt(s.d)],[&#x27;Radio exterior&#x27;,&#x27;R = &#x27;+fmt(q.R)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Radio interior&#x27;,&#x27;r = &#x27;+fmt(q.r)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Área del corte&#x27;,&#x27;A_i = &#x27;+fmt(area)+&#x27;\\,\\mathrm{u}^2&#x27;],[&#x27;Volumen del corte&#x27;,&#x27;\\Delta V_i = &#x27;+fmt(area*s.d)+&#x27;\\,\\mathrm{u}^3&#x27;],[&#x27;Suma de Riemann&#x27;,&#x27;V_{&#x27;+s.parts.length+&#x27;} = &#x27;+fmt(sum)+&#x27;\\,\\mathrm{u}^3&#x27;],[&#x27;Volumen numérico&#x27;,&#x27;V \\approx &#x27;+fmt(s.volume)+&#x27;\\,\\mathrm{u}^3&#x27;]];
+ const rows=[[&#x27;Posición del corte&#x27;,variable()+&#x27;_i^* = &#x27;+fmt(q.x)],[&#x27;Espesor&#x27;,&#x27;\\Delta x = &#x27;+fmt(s.d)],[&#x27;Radio exterior&#x27;,&#x27;R = &#x27;+fmt(q.R)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Radio interior&#x27;,&#x27;r = &#x27;+fmt(q.r)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Área del corte&#x27;,&#x27;A_i = &#x27;+fmt(area)+&#x27;\\,\\mathrm{u}^2&#x27;],[&#x27;Volumen del corte&#x27;,&#x27;\\Delta V_i = &#x27;+fmt(area*s.d)+&#x27;\\,\\mathrm{u}^3&#x27;],[&#x27;Suma de Riemann&#x27;,&#x27;V_{&#x27;+s.parts.length+&#x27;} = &#x27;+fmt(sum)+&#x27;\\,\\mathrm{u}^3&#x27;],[&#x27;Volumen numérico&#x27;,&#x27;V \\approx &#x27;+fmt(s.volume)+&#x27;\\,\\mathrm{u}^3&#x27;]];
  el(&#x27;values&#x27;).replaceChildren();for(const [label,value] of rows){const row=document.createElement(&#x27;section&#x27;);row.className=&#x27;r-result&#x27;;const name=document.createElement(&#x27;span&#x27;);name.className=&#x27;text-small&#x27;;name.textContent=label;const val=document.createElement(&#x27;span&#x27;);tex(val,value);row.append(name,val);el(&#x27;values&#x27;).append(row);}
- for(const value of [&#x27;V_n=\\sum_{i=1}^{n}\\pi\\bigl(R_i^2-r_i^2\\bigr)\\,\\Delta x&#x27;,&#x27;V=\\pi\\int_{&#x27;+fmt(s.a)+&#x27;}^{&#x27;+fmt(s.b)+&#x27;}\\bigl(R(x)^2-r(x)^2\\bigr)\\,dx&#x27;]){const row=document.createElement(&#x27;div&#x27;);row.className=&#x27;r-math&#x27;;tex(row,value);el(&#x27;values&#x27;).append(row);}
+
+ const v=variable(),ft=math.parse(expression(&#x27;f&#x27;)).toTex().replace(/\bx\b/g,v),gt=math.parse(expression(&#x27;g&#x27;)).toTex().replace(/\bx\b/g,v),c=Number(s.c.toPrecision(5));
+ const fs=c===0?ft:&#x27;(&#x27;+ft+&#x27;-&#x27;+c+&#x27;)&#x27;,gs=c===0?gt:&#x27;(&#x27;+gt+&#x27;-&#x27;+c+&#x27;)&#x27;;
+ const samples=Array.from({length:301},(_,j)=&gt;s.a+(s.b-s.a)*j/300);
+ const fOuter=samples.every(x=&gt;Math.abs(s.f(x)-s.c)&gt;=Math.abs(s.g(x)-s.c)-1e-10),gOuter=samples.every(x=&gt;Math.abs(s.g(x)-s.c)&gt;=Math.abs(s.f(x)-s.c)-1e-10),cross=samples.every(x=&gt;(s.f(x)-s.c)*(s.g(x)-s.c)&lt;=0),sameSide=samples.every(x=&gt;(s.f(x)-s.c)*(s.g(x)-s.c)&gt;=0);
+ const ro=fOuter?&#x27;\\left|&#x27;+fs+&#x27;\\right|&#x27;:gOuter?&#x27;\\left|&#x27;+gs+&#x27;\\right|&#x27;:&#x27;\\max\\{ |&#x27;+fs+&#x27;|,|&#x27;+gs+&#x27;|\\}&#x27;;
+ const ri=cross?&#x27;0&#x27;:sameSide?(fOuter?&#x27;\\left|&#x27;+gs+&#x27;\\right|&#x27;:gOuter?&#x27;\\left|&#x27;+fs+&#x27;\\right|&#x27;:&#x27;\\min\\{ |&#x27;+fs+&#x27;|,|&#x27;+gs+&#x27;|\\}&#x27;):&#x27;\\begin{cases}0 &amp; (&#x27;+fs+&#x27;)(&#x27;+gs+&#x27;)\\leq0\\\\min\\{|&#x27;+fs+&#x27;|,|&#x27;+gs+&#x27;|\\}&amp;\\text{en otro caso}\\end{cases}&#x27;;
+ const integrand=(fOuter?&#x27;(&#x27;+fs+&#x27;)^2&#x27;:gOuter?&#x27;(&#x27;+gs+&#x27;)^2&#x27;:&#x27;R(&#x27;+v+&#x27;)^2&#x27;)+(cross?&#x27;&#x27;:sameSide?&#x27; - &#x27;+(fOuter?&#x27;(&#x27;+gs+&#x27;)^2&#x27;:gOuter?&#x27;(&#x27;+fs+&#x27;)^2&#x27;:&#x27;r(&#x27;+v+&#x27;)^2&#x27;):&#x27; - r(&#x27;+v+&#x27;)^2&#x27;);
+ const formulas=[[&#x27;Radios para tus funciones&#x27;,&#x27;R(&#x27;+v+&#x27;)=&#x27;+ro],[&#x27;&#x27;,&#x27;r(&#x27;+v+&#x27;)=&#x27;+ri],[&#x27;Integral para este sólido&#x27;,&#x27;V=\\pi\\int_{&#x27;+s.a+&#x27;}^{&#x27;+s.b+&#x27;}\\left[&#x27;+integrand+&#x27;\\right]\\,d&#x27;+v],[&#x27;Aproximación con &#x27;+s.parts.length+&#x27; cortes&#x27;,&#x27;V_{&#x27;+s.parts.length+&#x27;}=\\sum_{i=1}^{&#x27;+s.parts.length+&#x27;}\\pi(R_i^2-r_i^2)\\,(&#x27;+fmt(s.d)+&#x27;)\\approx &#x27;+fmt(sum)]];
+ for(const [name,value] of formulas){if(name){const label=document.createElement(&#x27;div&#x27;);label.className=&#x27;r-formula-label&#x27;;label.textContent=name;el(&#x27;values&#x27;).append(label);}const row=document.createElement(&#x27;div&#x27;);row.className=&#x27;r-math&#x27;;tex(row,value);el(&#x27;values&#x27;).append(row);}
+
 }
 el(&#x27;go&#x27;).onclick=update;for(const id of [&#x27;n&#x27;,&#x27;rule&#x27;])el(id).addEventListener(&#x27;input&#x27;,update);for(const id of [&#x27;i&#x27;,&#x27;yaw&#x27;,&#x27;pitch&#x27;,&#x27;stack&#x27;])el(id).addEventListener(&#x27;input&#x27;,draw);
 el(&#x27;ex&#x27;).onchange=()=&gt;{const v=el(&#x27;ex&#x27;).value;el(&#x27;f&#x27;).value=v===&#x27;washer&#x27;?&#x27;x&#x27;:v===&#x27;wave&#x27;?&#x27;2 + sen(x)&#x27;:&#x27;√(x)&#x27;;el(&#x27;g&#x27;).value=v===&#x27;washer&#x27;?&#x27;x²&#x27;:&#x27;0&#x27;;el(&#x27;a&#x27;).value=0;el(&#x27;b&#x27;).value=v===&#x27;washer&#x27;?1:v===&#x27;wave&#x27;?6.283185307:4;el(&#x27;c&#x27;).value=0;update();};
+el(&#x27;orientation&#x27;).onchange=()=&gt;{syncAxis();update();};
+function pointInfo(event,pin=false){if(!marker)return;const rect=el(&#x27;solid&#x27;).getBoundingClientRect(),dx=event.clientX-rect.left-marker.px,dy=event.clientY-rect.top-marker.py,tip=el(&#x27;pointtip&#x27;);if(Math.hypot(dx,dy)&lt;24){tip.hidden=false;tex(tip,&#x27;P=(&#x27;+fmt(marker.x)+&#x27;,\\ &#x27;+fmt(marker.y)+&#x27;,\\ 0)&#x27;);tip.style.left=Math.max(8,Math.min(rect.width-220,marker.px+12))+&#x27;px&#x27;;tip.style.top=Math.max(8,marker.py-54)+&#x27;px&#x27;;}else if(!pin)tip.hidden=true;}
+el(&#x27;solid&#x27;).addEventListener(&#x27;pointermove&#x27;,pointInfo);el(&#x27;solid&#x27;).addEventListener(&#x27;click&#x27;,e=&gt;pointInfo(e,true));el(&#x27;solid&#x27;).addEventListener(&#x27;pointerleave&#x27;,()=&gt;el(&#x27;pointtip&#x27;).hidden=true);
+syncAxis();
 el(&#x27;theme&#x27;).onchange=()=&gt;{document.documentElement.style.colorScheme=el(&#x27;theme&#x27;).value;draw();};
 root.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(e.key===&#x27;Enter&#x27;)update();});new ResizeObserver(()=&gt;draw()).observe(el(&#x27;solid&#x27;));update();
 })();
