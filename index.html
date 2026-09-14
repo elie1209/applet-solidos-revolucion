@@ -1063,6 +1063,14 @@ html&gt;body{padding:0}&lt;/style&gt;
 #revolucion .solid-wrap{position:relative}#revolucion .point-tip{position:absolute;pointer-events:none;background:var(--popover);color:var(--popover-foreground);border:1px solid var(--border);border-radius:10px;padding:10px 14px;box-shadow:0 4px 16px #0002;max-width:calc(100% - 30px);z-index:2}
 #revolucion .input-note{color:var(--foreground);font-size:14px;margin:12px 0 20px;opacity:.8}
 #revolucion #rvalues .r-math{overflow-x:auto;padding:14px 2px}#revolucion .katex{font-size:1.08em}#revolucion .viz-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));align-items:end}#revolucion #rkeys{display:flex;flex-wrap:wrap}#revolucion .form-label{font-weight:500}#revolucion .r-formula-label{font-size:13px;margin-top:18px;color:var(--foreground)}
+&lt;/style&gt;&lt;style&gt;
+#revolucion input[type=&quot;range&quot;].form-range{appearance:none;-webkit-appearance:none;width:100%;height:30px;background:transparent;cursor:pointer;accent-color:light-dark(#1466aa,#82c9ff)}
+#revolucion input[type=&quot;range&quot;].form-range::-webkit-slider-runnable-track{height:7px;border-radius:7px;background:light-dark(#aec5d9,#56718a)}
+#revolucion input[type=&quot;range&quot;].form-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:light-dark(#1466aa,#82c9ff);border:2px solid light-dark(#ffffff,#16222d);margin-top:-7.5px;box-shadow:0 1px 4px #0003}
+#revolucion input[type=&quot;range&quot;].form-range::-moz-range-track{height:7px;border-radius:7px;background:light-dark(#aec5d9,#56718a)}
+#revolucion input[type=&quot;range&quot;].form-range::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:light-dark(#1466aa,#82c9ff);border:2px solid light-dark(#ffffff,#16222d)}
+#revolucion input[type=&quot;range&quot;]:focus-visible{outline:2px solid var(--primary);outline-offset:4px}
+#revolucion #rc{font-family:Cambria,Georgia,serif;font-size:22px}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
@@ -1090,7 +1098,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;div id=&quot;rinputnote&quot; class=&quot;input-note&quot;&gt;Funciones y = f(x) e y = g(x). Los límites corresponden a x.&lt;/div&gt;&lt;div class=&quot;viz-row&quot;&gt;
 &lt;label class=&quot;form-label&quot;&gt;Límite inferior (a)&lt;input class=&quot;form-control&quot; id=&quot;ra&quot; type=&quot;number&quot; value=&quot;0&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Límite superior (b)&lt;input class=&quot;form-control&quot; id=&quot;rb&quot; type=&quot;number&quot; value=&quot;4&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
-&lt;label class=&quot;form-label&quot;&gt;Girar alrededor de&lt;select class=&quot;form-select&quot; id=&quot;rorientation&quot;&gt;&lt;option value=&quot;x&quot;&gt;Eje X · horizontal&lt;/option&gt;&lt;option value=&quot;y&quot;&gt;Eje Y · vertical&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label class=&quot;form-label&quot;&gt;&lt;span id=&quot;raxislabel&quot;&gt;Desplazamiento: y =&lt;/span&gt;&lt;input class=&quot;form-control&quot; id=&quot;rc&quot; type=&quot;number&quot; value=&quot;0&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
+&lt;label class=&quot;form-label&quot;&gt;Orientación de la recta&lt;select class=&quot;form-select&quot; id=&quot;rorientation&quot;&gt;&lt;option value=&quot;x&quot;&gt;Horizontal · y = c&lt;/option&gt;&lt;option value=&quot;y&quot;&gt;Vertical · x = c&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label class=&quot;form-label&quot;&gt;&lt;span id=&quot;raxislabel&quot;&gt;Recta de giro: y =&lt;/span&gt;&lt;input class=&quot;form-control&quot; id=&quot;rc&quot; type=&quot;number&quot; value=&quot;0&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;
 &lt;button class=&quot;btn btn-primary&quot; id=&quot;rgo&quot; type=&quot;button&quot;&gt;Actualizar gráfica&lt;/button&gt;
 &lt;/div&gt;
 &lt;div class=&quot;viz-row&quot;&gt;
@@ -1130,7 +1138,7 @@ const vertical=()=&gt;el(&#x27;orientation&#x27;).value===&#x27;y&#x27;, variabl
 const expression=id=&gt;normalize(el(id).value).replace(/\by\b/g,&#x27;x&#x27;);
 const mathText=n=&gt;Number(n).toPrecision(5).replace(/0+$/,&#x27;&#x27;).replace(/\.$/,&#x27;&#x27;);
 let marker=null;
-function syncAxis(){const v=variable();el(&#x27;flabel&#x27;).textContent=&#x27;Función f(&#x27;+v+&#x27;)&#x27;;el(&#x27;glabel&#x27;).textContent=&#x27;Función g(&#x27;+v+&#x27;)&#x27;;el(&#x27;axislabel&#x27;).textContent=&#x27;Desplazamiento: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; =&#x27;;el(&#x27;inputnote&#x27;).textContent=vertical()?&#x27;Introduce x = f(y) y x = g(y). Los límites corresponden a y; no se invierte automáticamente una función de x.&#x27;:&#x27;Introduce y = f(x) e y = g(x). Los límites corresponden a x.&#x27;;for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){el(id).value=el(id).value.replace(vertical()? /\bx\b/g:/\by\b/g,v);el(id).setAttribute(&#x27;aria-label&#x27;,&#x27;Función &#x27;+id+&#x27; de &#x27;+v);}}
+function syncAxis(){const v=variable();el(&#x27;flabel&#x27;).textContent=&#x27;Función f(&#x27;+v+&#x27;)&#x27;;el(&#x27;glabel&#x27;).textContent=&#x27;Función g(&#x27;+v+&#x27;)&#x27;;el(&#x27;axislabel&#x27;).textContent=&#x27;Recta de giro: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; =&#x27;;el(&#x27;inputnote&#x27;).textContent=vertical()?&#x27;Introduce x = f(y) y x = g(y). Los límites corresponden a y; no se invierte automáticamente una función de x.&#x27;:&#x27;Introduce y = f(x) e y = g(x). Los límites corresponden a x.&#x27;;for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){el(id).value=el(id).value.replace(vertical()? /\bx\b/g:/\by\b/g,v);el(id).setAttribute(&#x27;aria-label&#x27;,&#x27;Función &#x27;+id+&#x27; de &#x27;+v);}}
 function previews(){for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){try{tex(el(id+&#x27;preview&#x27;),id+&#x27;(&#x27;+variable()+&#x27;)=&#x27;+math.parse(expression(id)).toTex().replace(/\bx\b/g,variable()));}catch{el(id+&#x27;preview&#x27;).textContent=&#x27;Completa la expresión&#x27;;}}}
 let active=el(&#x27;f&#x27;),timer;for(const id of [&#x27;f&#x27;,&#x27;g&#x27;]){el(id).onfocus=()=&gt;{active=el(id);el(&#x27;target&#x27;).textContent=&#x27;Escribir en &#x27;+id+&#x27;(x)&#x27;;};el(id).oninput=()=&gt;{previews();clearTimeout(timer);timer=setTimeout(update,550);};}
 el(&#x27;keys&#x27;).onclick=e=&gt;{const b=e.target.closest(&#x27;button&#x27;);if(!b)return;let start=active.selectionStart,end=active.selectionEnd,selected=active.value.slice(start,end),v=(b.dataset.insert||&#x27;&#x27;).replace(/x/g,variable());if(b.dataset.wrap)v=b.dataset.wrap+&#x27;(&#x27;+(selected||variable())+&#x27;)&#x27;;if(b.dataset.power)v=selected?&#x27;(&#x27;+selected+&#x27;)&#x27;+b.dataset.power:(start===0?&#x27;x&#x27;:&#x27;&#x27;)+b.dataset.power;if(b.dataset.fraction)v=&#x27;(&#x27;+(selected||variable())+&#x27;)/(1)&#x27;;if(b.dataset.clear){active.value=&#x27;&#x27;;active.focus();previews();return;}active.setRangeText(v,start,end,&#x27;end&#x27;);active.focus();if(b.dataset.fraction)active.setSelectionRange(start+v.length-2,start+v.length-1);previews();update();};
@@ -1192,24 +1200,23 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
   const placed=[];ctx.save();ctx.font=&#x27;13px system-ui&#x27;;ctx.textBaseline=&#x27;middle&#x27;;ctx.textAlign=&#x27;center&#x27;;
   for(const label of labels){const tw=ctx.measureText(label.text).width+10,th=22;let box;
    for(let step=0;step&lt;20;step++){const x=Math.max(tw/2+6,Math.min(w-tw/2-6,label.x)),y=Math.max(44,Math.min(h-42,label.y+(step?Math.ceil(step/2)*24*(step%2?1:-1):0)));box={x,y,l:x-tw/2,r:x+tw/2,t:y-th/2,b:y+th/2};if(!placed.some(p=&gt;box.l&lt;p.r+4&amp;&amp;box.r&gt;p.l-4&amp;&amp;box.t&lt;p.b+4&amp;&amp;box.b&gt;p.t-4))break;}
-   placed.push(box);ctx.clearRect(box.l,box.t,tw,th);ctx.fillStyle=C.bg;ctx.fillRect(box.l,box.t,tw,th);ctx.fillStyle=C.fg;ctx.fillText(label.text,box.x,box.y);
+   placed.push(box);ctx.fillStyle=C.fg;ctx.fillText(label.text,box.x,box.y);
   }ctx.restore();
  }
  const pad=(xmax-xmin)*.08,yp=(ymax-ymin)*.1;
  line3([[xmin-pad,-s.c,0],[xmax+pad,-s.c,0]],C.fg);label3([xmax+pad,-s.c,0],variable());
  line3([[0,ymin-yp,0],[0,ymax+yp,0]],C.fg);label3([0,ymax+yp,0],vertical()?&#x27;x&#x27;:&#x27;y&#x27;);
  line3([[0,-s.c,-s.max*1.1],[0,-s.c,s.max*1.1]],C.line);label3([0,-s.c,s.max*1.1],&#x27;z&#x27;);
- for(let j=0;j&lt;=3;j++){const x=xmin+(xmax-xmin)*j/3;line3([[x,-s.c-.04*s.max,0],[x,-s.c+.04*s.max,0]],C.fg);label3([x,-s.c,0],Number(x.toPrecision(3)).toString(),0,24);}
- for(let j=0;j&lt;=2;j++){const y=ymin+(ymax-ymin)*j/2;if(Math.abs(y+s.c)&lt;1e-9)continue;line3([[-pad*.35,y,0],[pad*.35,y,0]],C.fg);const text=Number((y+s.c).toPrecision(3)).toString();label3([0,y,0],text,-ctx.measureText(text).width/2-16,0);}
+ for(let j=0;j&lt;=3;j++){const x=xmin+(xmax-xmin)*j/3;line3([[x,-s.c-.04*s.max,0],[x,-s.c+.04*s.max,0]],C.fg);label3([x,-s.c,0],Number(x.toPrecision(3)).toString(),0,32);}
+ for(let j=0;j&lt;=2;j++){const y=ymin+(ymax-ymin)*j/2;if(Math.abs(y+s.c)&lt;1e-9)continue;line3([[-pad*.35,y,0],[pad*.35,y,0]],C.fg);const text=Number((y+s.c).toPrecision(3)).toString();label3([0,y,0],text,-ctx.measureText(text).width/2-24,0);}
  line3([[s.a,0,0],[s.b,0,0]],C.fg,1,[5,4]);
  const curve=fn=&gt;Array.from({length:201},(_,j)=&gt;{const x=s.a+(s.b-s.a)*j/200;return[x,fn(x)-s.c,0];});
  line3(curve(s.f),C.curve,3.5);line3(curve(s.g),C.inner,2,[6,3]);
  line3([[q.x,0,0],[q.x,q.R,0]],C.outer,2);line3([[q.x,0,0],[q.x,0,q.r]],C.inner,2);
- ctx.fillStyle=C.fg;ctx.fillText(&#x27;Eje &#x27;+(vertical()?&#x27;Y&#x27;:&#x27;X&#x27;)+&#x27; · &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),14,22);
+ ctx.fillStyle=C.fg;ctx.fillText(&#x27;Recta de giro: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),14,22);
  ctx.strokeStyle=C.curve;ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(14,h-18);ctx.lineTo(38,h-18);ctx.stroke();ctx.fillText(&#x27;f(x)&#x27;,44,h-14);ctx.strokeStyle=C.inner;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(100,h-18);ctx.lineTo(124,h-18);ctx.stroke();ctx.setLineDash([]);ctx.fillText(&#x27;g(x)&#x27;,130,h-14);
  paintLabels();
- const dot=xyz(q.x,s.f(q.x)-s.c,0);marker={px:dot[0],py:dot[1],x:vertical()?s.f(q.x):q.x,y:vertical()?q.x:s.f(q.x)};
- ctx.beginPath();ctx.arc(dot[0],dot[1],7,0,Math.PI*2);ctx.fillStyle=C.inner;ctx.fill();ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();el(&#x27;pointtip&#x27;).hidden=true;
+ marker=null;
 
  const cut=setup(&#x27;cut&#x27;),cx=cut.w/2,cy=cut.h/2+8,rad=Math.min(cut.w/2-32,cut.h/2-46),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0,cc=cut.ctx;
  cc.fillStyle=C.fg;cc.fillText(q.r&gt;0?&#x27;Arandela&#x27;:&#x27;Disco&#x27;,12,20);cc.beginPath();cc.arc(cx,cy,R,0,2*Math.PI);if(r&gt;0)cc.arc(cx,cy,r,0,2*Math.PI,true);cc.fillStyle=C.outer;cc.globalAlpha=.22;cc.fill(&#x27;evenodd&#x27;);cc.globalAlpha=1;cc.strokeStyle=C.outer;cc.stroke();
@@ -1236,6 +1243,7 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
 }
 el(&#x27;go&#x27;).onclick=update;for(const id of [&#x27;n&#x27;,&#x27;rule&#x27;])el(id).addEventListener(&#x27;input&#x27;,update);for(const id of [&#x27;i&#x27;,&#x27;yaw&#x27;,&#x27;pitch&#x27;,&#x27;stack&#x27;])el(id).addEventListener(&#x27;input&#x27;,draw);
 el(&#x27;ex&#x27;).onchange=()=&gt;{const v=el(&#x27;ex&#x27;).value;el(&#x27;f&#x27;).value=v===&#x27;washer&#x27;?&#x27;x&#x27;:v===&#x27;wave&#x27;?&#x27;2 + sen(x)&#x27;:&#x27;√(x)&#x27;;el(&#x27;g&#x27;).value=v===&#x27;washer&#x27;?&#x27;x²&#x27;:&#x27;0&#x27;;el(&#x27;a&#x27;).value=0;el(&#x27;b&#x27;).value=v===&#x27;washer&#x27;?1:v===&#x27;wave&#x27;?6.283185307:4;el(&#x27;c&#x27;).value=0;syncAxis();update();};
+el(&#x27;c&#x27;).addEventListener(&#x27;input&#x27;,update);el(&#x27;a&#x27;).addEventListener(&#x27;change&#x27;,update);el(&#x27;b&#x27;).addEventListener(&#x27;change&#x27;,update);
 el(&#x27;orientation&#x27;).onchange=()=&gt;{syncAxis();update();};
 function pointInfo(event,pin=false){if(!marker)return;const rect=el(&#x27;solid&#x27;).getBoundingClientRect(),dx=event.clientX-rect.left-marker.px,dy=event.clientY-rect.top-marker.py,tip=el(&#x27;pointtip&#x27;);if(Math.hypot(dx,dy)&lt;24){tip.hidden=false;tex(tip,&#x27;P=(&#x27;+fmt(marker.x)+&#x27;,\\ &#x27;+fmt(marker.y)+&#x27;,\\ 0)&#x27;);tip.style.left=Math.max(8,Math.min(rect.width-220,marker.px+12))+&#x27;px&#x27;;tip.style.top=Math.max(8,marker.py-54)+&#x27;px&#x27;;}else if(!pin)tip.hidden=true;}
 el(&#x27;solid&#x27;).addEventListener(&#x27;pointermove&#x27;,pointInfo);el(&#x27;solid&#x27;).addEventListener(&#x27;click&#x27;,e=&gt;pointInfo(e,true));el(&#x27;solid&#x27;).addEventListener(&#x27;pointerleave&#x27;,()=&gt;el(&#x27;pointtip&#x27;).hidden=true);
