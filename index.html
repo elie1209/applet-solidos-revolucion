@@ -1118,7 +1118,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;label class=&quot;form-label&quot;&gt;Girar vista&lt;input class=&quot;form-range&quot; id=&quot;ryaw&quot; type=&quot;range&quot; min=&quot;-75&quot; max=&quot;75&quot; value=&quot;-24&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Elevar vista&lt;input class=&quot;form-range&quot; id=&quot;rpitch&quot; type=&quot;range&quot; min=&quot;-60&quot; max=&quot;60&quot; value=&quot;22&quot;&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div id=&quot;rcompare&quot; class=&quot;viz-grid&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;viz-controls&quot;&gt;&lt;button class=&quot;btn&quot; id=&quot;rplay&quot; type=&quot;button&quot;&gt;Reproducir giro&lt;/button&gt;&lt;button class=&quot;btn&quot; id=&quot;rreset&quot; type=&quot;button&quot;&gt;Volver a 0°&lt;/button&gt;&lt;label class=&quot;form-label&quot;&gt;Ángulo de giro &lt;output id=&quot;rangleout&quot;&gt;360°&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;rangle&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;360&quot; step=&quot;1&quot; value=&quot;360&quot;&gt;&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;text-small&quot;&gt;La región gira alrededor de la recta elegida. El volumen y las sumas corresponden al sólido completo.&lt;/div&gt;&lt;div id=&quot;rcompare&quot; class=&quot;viz-grid&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
 &lt;hr&gt;
 &lt;div class=&quot;r-bottom&quot;&gt;&lt;section&gt;&lt;h3&gt;Corte separado del sólido&lt;/h3&gt;&lt;div class=&quot;text-small&quot;&gt;El mismo corte resaltado, ampliado para ver su espesor.&lt;/div&gt;&lt;canvas id=&quot;rcut&quot; role=&quot;img&quot; aria-label=&quot;Sección perpendicular al eje de giro con radio exterior R e interior r&quot;&gt;&lt;/canvas&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Radios y volumen&lt;/h3&gt;&lt;div aria-live=&quot;polite&quot; class=&quot;tabular-nums&quot; id=&quot;rvalues&quot;&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -1164,8 +1164,8 @@ function update(){try{
  }catch(e){state=null;el(&#x27;error&#x27;).textContent=e.message;el(&#x27;values&#x27;).textContent=&#x27;&#x27;;el(&#x27;profile&#x27;).replaceChildren();el(&#x27;compare&#x27;).replaceChildren();for(const id of [&#x27;solid&#x27;,&#x27;cut&#x27;]){const cv=el(id);cv.getContext(&#x27;2d&#x27;).clearRect(0,0,cv.width,cv.height);}}}
 function setup(id){const cv=el(id),w=cv.clientWidth,h=cv.clientHeight,dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext(&#x27;2d&#x27;);ctx.scale(dpr,dpr);ctx.font=&#x27;13px system-ui&#x27;;return{ctx,w,h};}
 function colors(){const probe=document.createElement(&#x27;span&#x27;);root.append(probe);const resolve=name=&gt;{probe.style.color=&#x27;var(&#x27;+name+&#x27;)&#x27;;return getComputedStyle(probe).color;};const result={fg:resolve(&#x27;--foreground&#x27;),bg:resolve(&#x27;--background&#x27;),line:resolve(&#x27;--border&#x27;),outer:resolve(&#x27;--viz-series-1&#x27;),inner:resolve(&#x27;--viz-series-2&#x27;),curve:resolve(&#x27;--viz-series-4&#x27;)};probe.remove();return result;}
-function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;).value-1,q=s.parts[sel];el(&#x27;iout&#x27;).textContent=sel+1;
- if(window.d3){
+function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;).value-1,q=s.parts[sel];el(&#x27;iout&#x27;).textContent=sel+1;
+ if(window.d3&amp;&amp;!animationOnly){
  const svg=d3.select(el(&#x27;profile&#x27;)),pw=el(&#x27;profile&#x27;).clientWidth,ph=370,margin={left:64,right:22,top:20,bottom:48};svg.selectAll(&#x27;*&#x27;).remove();svg.attr(&#x27;viewBox&#x27;,&#x27;0 0 &#x27;+pw+&#x27; &#x27;+ph);
  const data=Array.from({length:241},(_,j)=&gt;{const x=s.a+(s.b-s.a)*j/240;return{x,f:s.f(x),g:s.g(x)};}),yd=d3.extent([s.c,0,...data.flatMap(p=&gt;[p.f,p.g])]),ypad=(yd[1]-yd[0]||1)*.12;
  const xs=d3.scaleLinear().domain([s.a,s.b]).range([margin.left,pw-margin.right]),ys=d3.scaleLinear().domain([yd[0]-ypad,yd[1]+ypad]).nice().range([ph-margin.bottom,margin.top]);
@@ -1195,12 +1195,14 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  const scale=Math.min((w-90)/Math.hypot(xmax-xmin,2*s.max),(h-110)/Math.hypot(ymax-ymin,(xmax-xmin)*Math.sin(pitch),2*s.max*Math.sin(pitch)))*.88;
  function xyz(x,y,z){x-=midX;y-=midY;if(vertical()){const temp=x;x=y;y=temp;}const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+u*scale,h/2-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
  function path(points,fill,stroke,alpha=1){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();const savedAlpha=ctx.globalAlpha;ctx.globalAlpha=savedAlpha*alpha;if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=0.7;ctx.stroke();}ctx.globalAlpha=savedAlpha;}
- const faces=[],K=48,stack=el(&#x27;stack&#x27;).checked;
- const sections=stack?s.parts:Array.from({length:70},(_,j)=&gt;({left:s.a+(s.b-s.a)*j/70,right:s.a+(s.b-s.a)*(j+1)/70}));
- sections.forEach((p,j)=&gt;{let l=stack?p:s.radii(p.left),r=stack?p:s.radii(p.right);for(let k=0;k&lt;K;k++){
- const a=k*2*Math.PI/K,b=(k+1)*2*Math.PI/K;
- for(const key of [&#x27;R&#x27;,&#x27;r&#x27;]){if(!l[key]&amp;&amp;!r[key])continue;const pts=[[p.left,l[key]*Math.cos(a),l[key]*Math.sin(a)],[p.right,r[key]*Math.cos(a),r[key]*Math.sin(a)],[p.right,r[key]*Math.cos(b),r[key]*Math.sin(b)],[p.left,l[key]*Math.cos(b),l[key]*Math.sin(b)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:key===&#x27;r&#x27;?C.inner:C.outer,alpha:1,shade:(.68+.28*Math.cos(a-.7))*(j%2===k%2?1:.92),selected:stack&amp;&amp;j===sel});}
- if(stack||j===0||j===sections.length-1){for(const [x,v] of [[p.left,l],[p.right,r]]){const pts=[[x,v.R*Math.cos(a),v.R*Math.sin(a)],[x,v.R*Math.cos(b),v.R*Math.sin(b)],[x,v.r*Math.cos(b),v.r*Math.sin(b)],[x,v.r*Math.cos(a),v.r*Math.sin(a)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:C.outer,alpha:1,shade:.86,selected:stack&amp;&amp;j===sel});}}
+ const sweep=+el(&#x27;angle&#x27;).value*Math.PI/180;el(&#x27;angleout&#x27;).textContent=el(&#x27;angle&#x27;).value+&#x27;°&#x27;;
+ const faces=[],K=Math.max(1,Math.ceil(sweep/(Math.PI*2)*48)),stack=el(&#x27;stack&#x27;).checked;
+ let sections=stack?s.parts:Array.from({length:70},(_,j)=&gt;({left:s.a+(s.b-s.a)*j/70,right:s.a+(s.b-s.a)*(j+1)/70}));
+ if(sweep&lt;Math.PI*2){sections=sections.flatMap((p,j)=&gt;[1,-1].map(sign=&gt;{const radiiAt=x=&gt;{const a=sign*(s.f(x)-s.c),b=sign*(s.g(x)-s.c);return{R:Math.max(0,a,b),r:Math.max(0,Math.min(a,b))};};return{...p,original:j,phase:sign===1?0:Math.PI,L:radiiAt(stack?p.x:p.left),H:radiiAt(stack?p.x:p.right)};}).filter(p=&gt;p.L.R||p.H.R));}
+ sections.forEach((p,j)=&gt;{let l=p.L||(stack?p:s.radii(p.left)),r=p.H||(stack?p:s.radii(p.right));for(let k=0;k&lt;K&amp;&amp;sweep&gt;0;k++){
+ const a=(p.phase||0)+k*sweep/K,b=(p.phase||0)+(k+1)*sweep/K;
+ for(const key of [&#x27;R&#x27;,&#x27;r&#x27;]){if(!l[key]&amp;&amp;!r[key])continue;const pts=[[p.left,l[key]*Math.cos(a),l[key]*Math.sin(a)],[p.right,r[key]*Math.cos(a),r[key]*Math.sin(a)],[p.right,r[key]*Math.cos(b),r[key]*Math.sin(b)],[p.left,l[key]*Math.cos(b),l[key]*Math.sin(b)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:key===&#x27;r&#x27;?C.inner:C.outer,alpha:1,shade:(.68+.28*Math.cos(a-.7))*(j%2===k%2?1:.92),selected:stack&amp;&amp;(p.original??j)===sel});}
+ if(stack||j===0||j===sections.length-1){for(const [x,v] of [[p.left,l],[p.right,r]]){const pts=[[x,v.R*Math.cos(a),v.R*Math.sin(a)],[x,v.R*Math.cos(b),v.R*Math.sin(b)],[x,v.r*Math.cos(b),v.r*Math.sin(b)],[x,v.r*Math.cos(a),v.r*Math.sin(a)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:C.outer,alpha:1,shade:.86,selected:stack&amp;&amp;(p.original??j)===sel});}}
  }});
  
  // Ground grid and surface shading use the same projection as the solid.
@@ -1211,10 +1213,10 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  const shade=(color,factor)=&gt;{if(window.d3){const colorObj=d3.color(color);if(colorObj)return colorObj.darker((1-factor)*3).formatRgb();}return color;};
  faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha));
  // Sparse mesh makes the curvature readable without overwhelming the surface.
- if(!stack){ctx.save();ctx.globalAlpha=.28;for(let j=0;j&lt;=10;j++){const x=s.a+span*j/10;circle(x,s.radii(x).R,C.fg);}for(let k=0;k&lt;12;k++){const a=k*Math.PI/6;line3(Array.from({length:71},(_,j)=&gt;{const x=s.a+span*j/70,r=s.radii(x).R;return[x,r*Math.cos(a),r*Math.sin(a)];}),C.fg,.6);}ctx.restore();}
+ if(!stack&amp;&amp;sweep&gt;=Math.PI*2){ctx.save();ctx.globalAlpha=.28;for(let j=0;j&lt;=10;j++){const x=s.a+span*j/10;circle(x,s.radii(x).R,C.fg);}for(let k=0;k&lt;12;k++){const a=k*sweep/12;line3(Array.from({length:71},(_,j)=&gt;{const x=s.a+span*j/70,r=s.radii(x).R;return[x,r*Math.cos(a),r*Math.sin(a)];}),C.fg,.6);}ctx.restore();}
 
- function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*Math.PI/40),r*Math.sin(k*Math.PI/40)));path(pts,null,col);}
- if(stack){ctx.save();ctx.globalAlpha=.45;s.parts.forEach(p=&gt;circle(p.left,p.R,C.fg));ctx.restore();}circle(q.x,q.R,C.inner);if(q.r)circle(q.x,q.r,C.inner);
+ function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*sweep/80),r*Math.sin(k*sweep/80)));ctx.beginPath();pts.forEach((p,i)=&gt;i?ctx.lineTo(...p.slice(0,2)):ctx.moveTo(...p.slice(0,2)));ctx.strokeStyle=col;ctx.lineWidth=1;ctx.stroke();}
+ if(stack&amp;&amp;sweep&gt;=Math.PI*2){ctx.save();ctx.globalAlpha=.45;s.parts.forEach(p=&gt;circle(p.left,p.R,C.fg));ctx.restore();}if(sweep&gt;=Math.PI*2){circle(q.x,q.R,C.inner);if(q.r)circle(q.x,q.r,C.inner);}
  function line3(points,color,width=1,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;{const v=xyz(...p);i?ctx.lineTo(v[0],v[1]):ctx.moveTo(v[0],v[1]);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
  const labels=[];
  function label3(p,text,dx=12,dy=-15){const v=xyz(...p);labels.push({text,x:v[0]+dx,y:v[1]+dy});}
@@ -1237,9 +1239,14 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  line3([[q.x,0,0],[q.x,q.R,0]],C.outer,2);line3([[q.x,0,0],[q.x,0,q.r]],C.inner,2);
  ctx.fillStyle=C.fg;ctx.fillText(&#x27;Recta de giro: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),14,22);
  ctx.strokeStyle=C.curve;ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(14,h-18);ctx.lineTo(38,h-18);ctx.stroke();ctx.fillText(&#x27;f(x)&#x27;,44,h-14);ctx.strokeStyle=C.inner;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(100,h-18);ctx.lineTo(124,h-18);ctx.stroke();ctx.setLineDash([]);ctx.fillText(&#x27;g(x)&#x27;,130,h-14);
+
+ // The highlighted moving region shows the generating plane at the current angle.
+ const moving=fn=&gt;Array.from({length:101},(_,j)=&gt;{const x=s.a+(s.b-s.a)*j/100,r=fn(x)-s.c;return[x,r*Math.cos(sweep),r*Math.sin(sweep)];});
+ if(sweep&lt;Math.PI*2){path([...moving(s.f),...moving(s.g).reverse()].map(p=&gt;xyz(...p)),C.inner,C.inner,.3);line3(moving(s.f),C.curve,3);line3(moving(s.g),C.inner,2);}
  paintLabels();
  marker=null;
 
+ if(animationOnly)return;
  const cut=setup(&#x27;cut&#x27;),cc=cut.ctx,cy=cut.h/2,rad=Math.min(cut.w*.30,cut.h*.31),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0;
  const depth=Math.max(18,Math.min(75,rad*s.d/Math.max(q.R,.001))),cx=cut.w/2-depth/2;
  const point=(radius,t,front)=&gt;[cx+(front?depth:0)+radius*.48*Math.cos(t),cy-radius*Math.sin(t)];
@@ -1269,7 +1276,7 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  for(const [name,value] of formulas){if(name){const label=document.createElement(&#x27;div&#x27;);label.className=&#x27;r-formula-label&#x27;;label.textContent=name;el(&#x27;values&#x27;).append(label);}const row=document.createElement(&#x27;div&#x27;);row.className=&#x27;r-math&#x27;;tex(row,value);el(&#x27;values&#x27;).append(row);}
 
 }
-el(&#x27;go&#x27;).onclick=update;for(const id of [&#x27;n&#x27;,&#x27;rule&#x27;])el(id).addEventListener(&#x27;input&#x27;,update);for(const id of [&#x27;i&#x27;,&#x27;yaw&#x27;,&#x27;pitch&#x27;,&#x27;stack&#x27;])el(id).addEventListener(&#x27;input&#x27;,draw);
+el(&#x27;go&#x27;).onclick=update;for(const id of [&#x27;n&#x27;,&#x27;rule&#x27;])el(id).addEventListener(&#x27;input&#x27;,update);for(const id of [&#x27;i&#x27;,&#x27;yaw&#x27;,&#x27;pitch&#x27;,&#x27;stack&#x27;])el(id).addEventListener(&#x27;input&#x27;,()=&gt;draw());
 el(&#x27;ex&#x27;).onchange=()=&gt;{const v=el(&#x27;ex&#x27;).value;el(&#x27;f&#x27;).value=v===&#x27;washer&#x27;?&#x27;x&#x27;:v===&#x27;wave&#x27;?&#x27;2 + sen(x)&#x27;:&#x27;√(x)&#x27;;el(&#x27;g&#x27;).value=v===&#x27;washer&#x27;?&#x27;x²&#x27;:&#x27;0&#x27;;el(&#x27;a&#x27;).value=0;el(&#x27;b&#x27;).value=v===&#x27;washer&#x27;?1:v===&#x27;wave&#x27;?6.283185307:4;el(&#x27;c&#x27;).value=0;syncAxis();update();};
 el(&#x27;c&#x27;).addEventListener(&#x27;input&#x27;,update);el(&#x27;a&#x27;).addEventListener(&#x27;change&#x27;,update);el(&#x27;b&#x27;).addEventListener(&#x27;change&#x27;,update);
 el(&#x27;orientation&#x27;).onchange=()=&gt;{syncAxis();update();};
@@ -1280,7 +1287,14 @@ el(&#x27;solid&#x27;).addEventListener(&#x27;pointermove&#x27;,e=&gt;{if(!orbit)
 el(&#x27;solid&#x27;).addEventListener(&#x27;pointerup&#x27;,()=&gt;orbit=null);el(&#x27;solid&#x27;).addEventListener(&#x27;pointercancel&#x27;,()=&gt;orbit=null);
 syncAxis();
 el(&#x27;theme&#x27;).onchange=()=&gt;{document.documentElement.style.colorScheme=el(&#x27;theme&#x27;).value;draw();};
-root.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(e.key===&#x27;Enter&#x27;)update();});new ResizeObserver(()=&gt;draw()).observe(el(&#x27;solid&#x27;));update();
+let playing=false,frame=0,last=0;
+function stopRotation(){playing=false;cancelAnimationFrame(frame);el(&#x27;play&#x27;).textContent=&#x27;Reproducir giro&#x27;;}
+function animate(t){if(!playing)return;if(!last)last=t;if(t-last&gt;=40){const next=Math.min(360,+el(&#x27;angle&#x27;).value+(t-last)*.045);el(&#x27;angle&#x27;).value=String(Math.round(next));last=t;draw(true);if(next&gt;=360){stopRotation();return;}}frame=requestAnimationFrame(animate);}
+el(&#x27;play&#x27;).onclick=()=&gt;{if(playing){stopRotation();return;}if(+el(&#x27;angle&#x27;).value&gt;=360)el(&#x27;angle&#x27;).value=&#x27;0&#x27;;playing=true;last=0;el(&#x27;play&#x27;).textContent=&#x27;Pausar giro&#x27;;frame=requestAnimationFrame(animate);};
+el(&#x27;reset&#x27;).onclick=()=&gt;{stopRotation();el(&#x27;angle&#x27;).value=&#x27;0&#x27;;draw();};
+el(&#x27;angle&#x27;).oninput=()=&gt;{stopRotation();draw(true);};
+document.addEventListener(&#x27;visibilitychange&#x27;,()=&gt;{if(document.hidden)stopRotation();});
+root.addEventListener(&#x27;keydown&#x27; ,e=&gt;{if(e.key===&#x27;Enter&#x27;)update();});new ResizeObserver(()=&gt;draw()).observe(el(&#x27;solid&#x27;));update();
 })();
 &lt;/script&gt;
 
