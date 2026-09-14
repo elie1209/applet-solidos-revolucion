@@ -1182,9 +1182,6 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  for(const x of xs.ticks(8))grid.append(&#x27;line&#x27;).attr(&#x27;x1&#x27;,xs(x)).attr(&#x27;x2&#x27;,xs(x)).attr(&#x27;y1&#x27;,margin.top).attr(&#x27;y2&#x27;,ph-margin.bottom);
  for(const y of ys.ticks(8))grid.append(&#x27;line&#x27;).attr(&#x27;x1&#x27;,margin.left).attr(&#x27;x2&#x27;,pw-margin.right).attr(&#x27;y1&#x27;,ys(y)).attr(&#x27;y2&#x27;,ys(y));
  svg.append(&#x27;path&#x27;).attr(&#x27;d&#x27;,regionPath).attr(&#x27;fill&#x27;,&#x27;url(#region-shade)&#x27;);
- const mesh=svg.append(&#x27;g&#x27;).attr(&#x27;clip-path&#x27;,&#x27;url(#region-clip)&#x27;).attr(&#x27;stroke&#x27;,C.outer).attr(&#x27;stroke-opacity&#x27;,.55).attr(&#x27;stroke-width&#x27;,.8);
- for(let j=0;j&lt;=16;j++){const x=xs(s.a+(s.b-s.a)*j/16);mesh.append(&#x27;line&#x27;).attr(&#x27;x1&#x27;,x).attr(&#x27;x2&#x27;,x).attr(&#x27;y1&#x27;,margin.top).attr(&#x27;y2&#x27;,ph-margin.bottom);}
- for(let j=0;j&lt;=12;j++){const y=margin.top+(ph-margin.top-margin.bottom)*j/12;mesh.append(&#x27;line&#x27;).attr(&#x27;x1&#x27;,margin.left).attr(&#x27;x2&#x27;,pw-margin.right).attr(&#x27;y1&#x27;,y).attr(&#x27;y2&#x27;,y);}
  svg.append(&#x27;path&#x27;).attr(&#x27;d&#x27;,regionPath).attr(&#x27;fill&#x27;,&#x27;none&#x27;).attr(&#x27;stroke&#x27;,C.outer).attr(&#x27;stroke-width&#x27;,1.2);
 
  svg.append(&#x27;line&#x27;).attr(&#x27;x1&#x27;,xs(s.a)).attr(&#x27;x2&#x27;,xs(s.b)).attr(&#x27;y1&#x27;,ys(s.c)).attr(&#x27;y2&#x27;,ys(s.c)).attr(&#x27;stroke&#x27;,C.fg).attr(&#x27;stroke-dasharray&#x27;,&#x27;5 4&#x27;);
