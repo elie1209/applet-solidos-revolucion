@@ -1034,7 +1034,8 @@ svg.lucide {
   color: var(--destructive);
 }
 
-html&gt;body{padding:0}&lt;/style&gt;
+html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details{display:grid;gap:8px;padding:12px 0}#revolucion .r-cut-details&gt;div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;border-bottom:1px solid var(--border);padding-bottom:7px}
+&lt;/style&gt;
 &lt;style&gt;
 :root{color-scheme:light}html body{padding:0!important;background:var(--background);color:var(--foreground)}
 #revolucion{max-width:1160px;margin:0 auto;padding:32px 28px 48px;box-sizing:border-box}
@@ -1120,7 +1121,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;/div&gt;
 &lt;div class=&quot;viz-controls&quot;&gt;&lt;button class=&quot;btn&quot; id=&quot;rplay&quot; type=&quot;button&quot;&gt;Reproducir giro&lt;/button&gt;&lt;button class=&quot;btn&quot; id=&quot;rreset&quot; type=&quot;button&quot;&gt;Volver a 0°&lt;/button&gt;&lt;label class=&quot;form-label&quot;&gt;Ángulo de giro &lt;output id=&quot;rangleout&quot;&gt;360°&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;rangle&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;360&quot; step=&quot;1&quot; value=&quot;360&quot;&gt;&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;text-small&quot;&gt;La región gira alrededor de la recta elegida. El volumen y las sumas corresponden al sólido completo.&lt;/div&gt;&lt;div id=&quot;rcompare&quot; class=&quot;viz-grid&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
 &lt;hr&gt;
-&lt;div class=&quot;r-bottom&quot;&gt;&lt;section&gt;&lt;h3&gt;Corte separado del sólido&lt;/h3&gt;&lt;div class=&quot;text-small&quot;&gt;El mismo corte resaltado, ampliado para ver su espesor.&lt;/div&gt;&lt;canvas id=&quot;rcut&quot; role=&quot;img&quot; aria-label=&quot;Sección perpendicular al eje de giro con radio exterior R e interior r&quot;&gt;&lt;/canvas&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Radios y volumen&lt;/h3&gt;&lt;div aria-live=&quot;polite&quot; class=&quot;tabular-nums&quot; id=&quot;rvalues&quot;&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;
+&lt;div class=&quot;r-bottom&quot;&gt;&lt;section&gt;&lt;h3&gt;Corte separado del sólido&lt;/h3&gt;&lt;div class=&quot;text-small&quot;&gt;El mismo corte resaltado, ampliado para ver su espesor.&lt;/div&gt;&lt;canvas id=&quot;rcut&quot; role=&quot;img&quot; aria-label=&quot;Sección perpendicular al eje de giro con radio exterior R e interior r&quot;&gt;&lt;/canvas&gt;&lt;div id=&quot;rcutdetails&quot; class=&quot;r-cut-details&quot;&gt;&lt;/div&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Radios y volumen&lt;/h3&gt;&lt;div aria-live=&quot;polite&quot; class=&quot;tabular-nums&quot; id=&quot;rvalues&quot;&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;style&gt;
 #revolucion .r-views{display:grid;grid-template-columns:1fr 1fr;gap:20px}#revolucion .r-views section{min-width:0}#revolucion #rprofile{display:block;width:100%;height:370px}#revolucion #rprofile text{fill:var(--foreground);font:12px system-ui}#revolucion details{margin:12px 0}#revolucion summary{cursor:pointer}#revolucion #rcompare{margin:18px 0}#revolucion .r-bottom section{min-width:0}@media(max-width:740px){#revolucion .r-views{grid-template-columns:1fr}}
@@ -1247,7 +1248,8 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  marker=null;
 
  if(animationOnly)return;
- const cut=setup(&#x27;cut&#x27;),cc=cut.ctx,cy=cut.h/2,rad=Math.min(cut.w*.30,cut.h*.31),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0;
+ el(&#x27;cut&#x27;).style.height=&#x27;390px&#x27;;
+ const cut=setup(&#x27;cut&#x27;),cc=cut.ctx,cy=160,rad=Math.min(cut.w*.28,90),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0;
  const depth=Math.max(18,Math.min(75,rad*s.d/Math.max(q.R,.001))),cx=cut.w/2-depth/2;
  const point=(radius,t,front)=&gt;[cx+(front?depth:0)+radius*.48*Math.cos(t),cy-radius*Math.sin(t)];
  function ellipse(radius,front){cc.beginPath();cc.ellipse(cx+(front?depth:0),cy,radius*.48,radius,0,0,Math.PI*2);}
@@ -1256,9 +1258,21 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  for(let j=0;j&lt;48;j++){const t=j*Math.PI*2/48,u=(j+1)*Math.PI*2/48;for(const radius of [R,r]){if(!radius)continue;const pts=[point(radius,t,false),point(radius,u,false),point(radius,u,true),point(radius,t,true)];cc.beginPath();pts.forEach((p,i)=&gt;i?cc.lineTo(...p):cc.moveTo(...p));cc.closePath();cc.fillStyle=d3.color(C.outer).darker(.25+.65*(1+Math.sin(t))/2).formatRgb();cc.fill();}}
  cc.beginPath();cc.ellipse(cx+depth,cy,R*.48,R,0,0,Math.PI*2);if(r)cc.ellipse(cx+depth,cy,r*.48,r,0,0,Math.PI*2,true);cc.fillStyle=C.outer;cc.fill(&#x27;evenodd&#x27;);cc.strokeStyle=C.inner;cc.lineWidth=2;cc.stroke();
  if(r){ellipse(r,true);cc.fillStyle=C.bg;cc.fill();cc.strokeStyle=C.inner;cc.stroke();}
- cc.font=&#x27;italic 17px Georgia&#x27;;cc.fillStyle=C.fg;
- for(const [radius,t,label] of [[R,Math.PI/2,&#x27;R&#x27;],[r,-Math.PI/4,&#x27;r&#x27;]]){if(!radius)continue;const p=point(radius,t,true);cc.beginPath();cc.moveTo(cx+depth,cy);cc.lineTo(...p);cc.strokeStyle=C.fg;cc.lineWidth=1.5;cc.stroke();cc.fillText(label,(cx+depth+p[0])/2+7,(cy+p[1])/2);}
- const dy=cy+rad+23;cc.beginPath();cc.moveTo(cx,dy-6);cc.lineTo(cx,dy+6);cc.moveTo(cx,dy);cc.lineTo(cx+depth,dy);cc.moveTo(cx+depth,dy-6);cc.lineTo(cx+depth,dy+6);cc.stroke();cc.textAlign=&#x27;center&#x27;;cc.fillText(&#x27;Δ&#x27;+variable(),cx+depth/2,dy+22);cc.textAlign=&#x27;left&#x27;;cc.font=&#x27;13px system-ui&#x27;;cc.fillText(q.r&gt;0?&#x27;Arandela&#x27;:&#x27;Disco&#x27;,12,20);
+ cc.font=&#x27;italic 18px Georgia&#x27;;cc.fillStyle=C.fg;
+ function arrow(x1,y1,x2,y2,color){cc.strokeStyle=color;cc.fillStyle=color;cc.lineWidth=1.5;cc.beginPath();cc.moveTo(x1,y1);cc.lineTo(x2,y2);cc.stroke();const a=Math.atan2(y2-y1,x2-x1);cc.beginPath();cc.moveTo(x2,y2);cc.lineTo(x2-7*Math.cos(a-.45),y2-7*Math.sin(a-.45));cc.lineTo(x2-7*Math.cos(a+.45),y2-7*Math.sin(a+.45));cc.closePath();cc.fill();}
+ const center=cx+depth;
+ arrow(center,cy,center,cy-R,C.fg);cc.fillText(&#x27;R&#x27;,center+10,cy-R/2);
+ if(r){const end=point(r,-Math.PI/4,true);arrow(center,cy,...end,C.fg);cc.fillText(&#x27;r&#x27;,end[0]+8,end[1]+7);}
+ // Label the revolution axis and the two transverse directions.
+ const axisEnd=cut.w-22;arrow(center+R*.48+10,cy,axisEnd,cy,C.fg);cc.font=&#x27;italic 17px Georgia&#x27;;cc.fillText(variable(),axisEnd-3,cy-12);
+ arrow(center,cy-R-12,center,36,C.fg);cc.fillText(vertical()?&#x27;x&#x27;:&#x27;y&#x27;,center+9,40);
+ cc.setLineDash([3,4]);arrow(center,cy,center-R*.48-35,cy+R*.55,C.fg);cc.setLineDash([]);cc.fillText(&#x27;z&#x27;,center-R*.48-48,cy+R*.55+8);
+ cc.font=&#x27;13px system-ui&#x27;;cc.fillStyle=C.fg;cc.textAlign=&#x27;center&#x27;;cc.fillText(&#x27;Eje de giro: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),cut.w/2,22);
+ const dy=cy+rad+38;cc.strokeStyle=C.fg;cc.lineWidth=1;cc.setLineDash([3,4]);cc.beginPath();cc.moveTo(cx,cy+rad+8);cc.lineTo(cx,dy+6);cc.moveTo(center,cy+rad+8);cc.lineTo(center,dy+6);cc.stroke();cc.setLineDash([]);
+ cc.beginPath();cc.moveTo(cx,dy-6);cc.lineTo(cx,dy+6);cc.moveTo(cx,dy);cc.lineTo(center,dy);cc.moveTo(center,dy-6);cc.lineTo(center,dy+6);cc.stroke();
+ cc.font=&#x27;italic 17px Georgia&#x27;;cc.fillText(&#x27;Δ&#x27;+variable(),(cx+center)/2,dy+27);cc.font=&#x27;12px system-ui&#x27;;cc.fillText(&#x27;Espesor del corte&#x27;,cut.w/2,dy+48);cc.fillText(&#x27;Perspectiva ampliada · no está a escala&#x27;,cut.w/2,376);cc.textAlign=&#x27;left&#x27;;
+ el(&#x27;cutdetails&#x27;).replaceChildren();
+ for(const [name,formula] of [[&#x27;Radio exterior&#x27;,&#x27;R = &#x27;+fmt(q.R)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Radio interior&#x27;,&#x27;r = &#x27;+fmt(q.r)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Espesor&#x27;,&#x27;\\Delta &#x27;+variable()+&#x27; = &#x27;+fmt(s.d)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Intervalo del corte&#x27;,&#x27;[&#x27;+fmt(q.left)+&#x27;, &#x27;+fmt(q.right)+&#x27;]&#x27;],[&#x27;Punto de muestra&#x27;,variable()+&#x27;_i^* = &#x27;+fmt(q.x)]]){const row=document.createElement(&#x27;div&#x27;),label=document.createElement(&#x27;span&#x27;),value=document.createElement(&#x27;span&#x27;);label.textContent=name;tex(value,formula);row.append(label,value);el(&#x27;cutdetails&#x27;).append(row);}
  const sum=s.parts.reduce((v,p)=&gt;v+Math.PI*(p.R*p.R-p.r*p.r)*s.d,0),area=Math.PI*(q.R*q.R-q.r*q.r);
  el(&#x27;compare&#x27;).replaceChildren();for(const [name,t] of [[&#x27;Extremo izquierdo&#x27;,0],[&#x27;Punto medio&#x27;,.5],[&#x27;Extremo derecho&#x27;,1]]){let volume=0;for(let j=0;j&lt;s.parts.length;j++){const r=s.radii(s.a+(j+t)*s.d);volume+=Math.PI*(r.R*r.R-r.r*r.r)*s.d;}const card=document.createElement(&#x27;section&#x27;);card.className=&#x27;card viz-stat&#x27;;const title=document.createElement(&#x27;div&#x27;);title.textContent=name;const value=document.createElement(&#x27;div&#x27;);value.className=&#x27;viz-stat-value&#x27;;tex(value,fmt(volume)+&#x27;\\,\\mathrm{u}^3&#x27;);const error=document.createElement(&#x27;div&#x27;);error.className=&#x27;text-small&#x27;;error.textContent=s.volume?&#x27;Diferencia relativa ≈ &#x27;+fmt(Math.abs(volume-s.volume)/Math.abs(s.volume)*100)+&#x27; %&#x27;:&#x27;Diferencia absoluta: &#x27;+fmt(Math.abs(volume-s.volume));card.append(title,value,error);el(&#x27;compare&#x27;).append(card);}
  cc.fillStyle=C.fg;
