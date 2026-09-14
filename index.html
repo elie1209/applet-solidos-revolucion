@@ -1071,6 +1071,8 @@ html&gt;body{padding:0}&lt;/style&gt;
 #revolucion input[type=&quot;range&quot;].form-range::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:light-dark(#1466aa,#82c9ff);border:2px solid light-dark(#ffffff,#16222d)}
 #revolucion input[type=&quot;range&quot;]:focus-visible{outline:2px solid var(--primary);outline-offset:4px}
 #revolucion #rc{font-family:Cambria,Georgia,serif;font-size:22px}
+&lt;/style&gt;&lt;style&gt;
+#revolucion #rsolid{height:440px;cursor:grab;touch-action:none}#revolucion #rsolid:active{cursor:grabbing}#revolucion .solid-hint{margin-top:-8px;margin-bottom:8px;color:var(--foreground);opacity:.7}#revolucion .r-views{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}#revolucion .r-views&gt;section{background:light-dark(#f8fbfe,#131c26)}#revolucion #rprofile{height:440px}@media(max-width:740px){#revolucion .r-views{grid-template-columns:1fr}}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
@@ -1104,14 +1106,14 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;div class=&quot;viz-row&quot;&gt;
 &lt;label class=&quot;form-label&quot;&gt;Ejemplos de funciones&lt;select class=&quot;form-select&quot; id=&quot;rex&quot;&gt;&lt;option value=&quot;disk&quot;&gt;Discos: √x&lt;/option&gt;&lt;option value=&quot;washer&quot;&gt;Arandelas: x y x²&lt;/option&gt;&lt;option value=&quot;wave&quot;&gt;Ondas: 2 + sen(x)&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Punto de muestra&lt;select class=&quot;form-select&quot; id=&quot;rrule&quot;&gt;&lt;option value=&quot;0.5&quot;&gt;Punto medio&lt;/option&gt;&lt;option value=&quot;0&quot;&gt;Izquierdo&lt;/option&gt;&lt;option value=&quot;1&quot;&gt;Derecho&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-&lt;label class=&quot;form-check&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;rstack&quot; checked&gt;&lt;span class=&quot;form-check-label&quot;&gt;Suma de Riemann&lt;/span&gt;&lt;/label&gt;
+&lt;label class=&quot;form-check&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;rstack&quot;&gt;&lt;span class=&quot;form-check-label&quot;&gt;Ver discos / arandelas de Riemann&lt;/span&gt;&lt;/label&gt;
 &lt;/div&gt;
 &lt;div id=&quot;rerror&quot; role=&quot;alert&quot; class=&quot;text-destructive&quot;&gt;&lt;/div&gt;
 &lt;div class=&quot;viz-controls&quot;&gt;
 &lt;label class=&quot;form-label&quot;&gt;Particiones: &lt;output id=&quot;rnval&quot;&gt;12&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;rn&quot; type=&quot;range&quot; min=&quot;2&quot; max=&quot;100&quot; value=&quot;12&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Corte seleccionado: &lt;output id=&quot;riout&quot;&gt;6&lt;/output&gt;&lt;input class=&quot;form-range&quot; id=&quot;ri&quot; type=&quot;range&quot; min=&quot;1&quot; max=&quot;12&quot; value=&quot;6&quot;&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div class=&quot;r-views&quot;&gt;&lt;section&gt;&lt;h3&gt;Región que gira&lt;/h3&gt;&lt;svg id=&quot;rprofile&quot; role=&quot;img&quot; aria-label=&quot;Funciones f y g, región entre ellas y segmento seleccionado&quot;&gt;&lt;/svg&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Sólido y particiones&lt;/h3&gt;&lt;div class=&quot;solid-wrap&quot;&gt;&lt;canvas id=&quot;rsolid&quot; role=&quot;img&quot; aria-label=&quot;Sólido de revolución tridimensional. El corte seleccionado aparece resaltado.&quot;&gt;&lt;/canvas&gt;&lt;div id=&quot;rpointtip&quot; class=&quot;point-tip&quot; role=&quot;status&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;
+&lt;div class=&quot;r-views&quot;&gt;&lt;section&gt;&lt;h3&gt;Región que gira&lt;/h3&gt;&lt;svg id=&quot;rprofile&quot; role=&quot;img&quot; aria-label=&quot;Funciones f y g, región entre ellas y segmento seleccionado&quot;&gt;&lt;/svg&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;Sólido de revolución&lt;/h3&gt;&lt;div class=&quot;text-small solid-hint&quot;&gt;Arrastra para girar la vista&lt;/div&gt;&lt;div class=&quot;solid-wrap&quot;&gt;&lt;canvas id=&quot;rsolid&quot; role=&quot;img&quot; aria-label=&quot;Sólido de revolución tridimensional. El corte seleccionado aparece resaltado.&quot;&gt;&lt;/canvas&gt;&lt;div id=&quot;rpointtip&quot; class=&quot;point-tip&quot; role=&quot;status&quot; hidden&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;
 &lt;div class=&quot;viz-controls&quot;&gt;
 &lt;label class=&quot;form-label&quot;&gt;Girar vista&lt;input class=&quot;form-range&quot; id=&quot;ryaw&quot; type=&quot;range&quot; min=&quot;-75&quot; max=&quot;75&quot; value=&quot;-24&quot;&gt;&lt;/label&gt;
 &lt;label class=&quot;form-label&quot;&gt;Elevar vista&lt;input class=&quot;form-range&quot; id=&quot;rpitch&quot; type=&quot;range&quot; min=&quot;-60&quot; max=&quot;60&quot; value=&quot;22&quot;&gt;&lt;/label&gt;
@@ -1182,17 +1184,27 @@ function draw(){if(!state)return;const s=state,C=colors(),sel=+el(&#x27;i&#x27;)
  const xmin=Math.min(0,s.a),xmax=Math.max(0,s.b),ymin=Math.min(-s.max,-s.c),ymax=Math.max(s.max,-s.c),midX=(xmin+xmax)/2,midY=(ymin+ymax)/2;
  const scale=Math.min((w-90)/Math.hypot(xmax-xmin,2*s.max),(h-110)/Math.hypot(ymax-ymin,(xmax-xmin)*Math.sin(pitch),2*s.max*Math.sin(pitch)))*.88;
  function xyz(x,y,z){x-=midX;y-=midY;if(vertical()){const temp=x;x=y;y=temp;}const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+u*scale,h/2-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
- function path(points,fill,stroke,alpha=1){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.globalAlpha=alpha;if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=0.7;ctx.stroke();}ctx.globalAlpha=1;}
- const faces=[],K=40,stack=el(&#x27;stack&#x27;).checked;
+ function path(points,fill,stroke,alpha=1){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();const savedAlpha=ctx.globalAlpha;ctx.globalAlpha=savedAlpha*alpha;if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=0.7;ctx.stroke();}ctx.globalAlpha=savedAlpha;}
+ const faces=[],K=48,stack=el(&#x27;stack&#x27;).checked;
  const sections=stack?s.parts:Array.from({length:70},(_,j)=&gt;({left:s.a+(s.b-s.a)*j/70,right:s.a+(s.b-s.a)*(j+1)/70}));
  sections.forEach((p,j)=&gt;{let l=stack?p:s.radii(p.left),r=stack?p:s.radii(p.right);for(let k=0;k&lt;K;k++){
  const a=k*2*Math.PI/K,b=(k+1)*2*Math.PI/K;
- for(const key of [&#x27;R&#x27;,&#x27;r&#x27;]){if(!l[key]&amp;&amp;!r[key])continue;const pts=[[p.left,l[key]*Math.cos(a),l[key]*Math.sin(a)],[p.right,r[key]*Math.cos(a),r[key]*Math.sin(a)],[p.right,r[key]*Math.cos(b),r[key]*Math.sin(b)],[p.left,l[key]*Math.cos(b),l[key]*Math.sin(b)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:key===&#x27;r&#x27;?C.inner:C.outer,alpha:stack&amp;&amp;j===sel?.7:.2});}
- if(stack||j===0||j===sections.length-1){for(const [x,v] of [[p.left,l],[p.right,r]]){const pts=[[x,v.R*Math.cos(a),v.R*Math.sin(a)],[x,v.R*Math.cos(b),v.R*Math.sin(b)],[x,v.r*Math.cos(b),v.r*Math.sin(b)],[x,v.r*Math.cos(a),v.r*Math.sin(a)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:C.outer,alpha:stack&amp;&amp;j===sel?.65:.10});}}
+ for(const key of [&#x27;R&#x27;,&#x27;r&#x27;]){if(!l[key]&amp;&amp;!r[key])continue;const pts=[[p.left,l[key]*Math.cos(a),l[key]*Math.sin(a)],[p.right,r[key]*Math.cos(a),r[key]*Math.sin(a)],[p.right,r[key]*Math.cos(b),r[key]*Math.sin(b)],[p.left,l[key]*Math.cos(b),l[key]*Math.sin(b)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:key===&#x27;r&#x27;?C.inner:C.outer,alpha:1,shade:(.68+.28*Math.cos(a-.7))*(j%2===k%2?1:.92),selected:stack&amp;&amp;j===sel});}
+ if(stack||j===0||j===sections.length-1){for(const [x,v] of [[p.left,l],[p.right,r]]){const pts=[[x,v.R*Math.cos(a),v.R*Math.sin(a)],[x,v.R*Math.cos(b),v.R*Math.sin(b)],[x,v.r*Math.cos(b),v.r*Math.sin(b)],[x,v.r*Math.cos(a),v.r*Math.sin(a)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:C.outer,alpha:1,shade:.86,selected:stack&amp;&amp;j===sel});}}
  }});
- faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,f.color,null,f.alpha));
+ 
+ // Ground grid and surface shading use the same projection as the solid.
+ const floor=ymin-.18*s.max,span=s.b-s.a;
+ ctx.save();ctx.globalAlpha=.45;
+ for(let j=0;j&lt;=8;j++){const gx=xmin+(xmax-xmin)*j/8,gz=-s.max*1.3+2.6*s.max*j/8;line3([[gx,floor,-s.max*1.3],[gx,floor,s.max*1.3]],C.line);line3([[xmin,floor,gz],[xmax,floor,gz]],C.line);}
+ ctx.restore();
+ const shade=(color,factor)=&gt;{if(window.d3){const colorObj=d3.color(color);if(colorObj)return colorObj.darker((1-factor)*3).formatRgb();}return color;};
+ faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha));
+ // Sparse mesh makes the curvature readable without overwhelming the surface.
+ if(!stack){ctx.save();ctx.globalAlpha=.28;for(let j=0;j&lt;=10;j++){const x=s.a+span*j/10;circle(x,s.radii(x).R,C.fg);}for(let k=0;k&lt;12;k++){const a=k*Math.PI/6;line3(Array.from({length:71},(_,j)=&gt;{const x=s.a+span*j/70,r=s.radii(x).R;return[x,r*Math.cos(a),r*Math.sin(a)];}),C.fg,.6);}ctx.restore();}
+
  function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*Math.PI/40),r*Math.sin(k*Math.PI/40)));path(pts,null,col);}
- if(stack)s.parts.forEach(p=&gt;circle(p.left,p.R,C.line));circle(q.x,q.R,C.outer);if(q.r)circle(q.x,q.r,C.inner);
+ if(stack){ctx.save();ctx.globalAlpha=.45;s.parts.forEach(p=&gt;circle(p.left,p.R,C.fg));ctx.restore();}circle(q.x,q.R,C.inner);if(q.r)circle(q.x,q.r,C.inner);
  function line3(points,color,width=1,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;{const v=xyz(...p);i?ctx.lineTo(v[0],v[1]):ctx.moveTo(v[0],v[1]);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
  const labels=[];
  function label3(p,text,dx=12,dy=-15){const v=xyz(...p);labels.push({text,x:v[0]+dx,y:v[1]+dy});}
@@ -1246,7 +1258,10 @@ el(&#x27;ex&#x27;).onchange=()=&gt;{const v=el(&#x27;ex&#x27;).value;el(&#x27;f&
 el(&#x27;c&#x27;).addEventListener(&#x27;input&#x27;,update);el(&#x27;a&#x27;).addEventListener(&#x27;change&#x27;,update);el(&#x27;b&#x27;).addEventListener(&#x27;change&#x27;,update);
 el(&#x27;orientation&#x27;).onchange=()=&gt;{syncAxis();update();};
 function pointInfo(event,pin=false){if(!marker)return;const rect=el(&#x27;solid&#x27;).getBoundingClientRect(),dx=event.clientX-rect.left-marker.px,dy=event.clientY-rect.top-marker.py,tip=el(&#x27;pointtip&#x27;);if(Math.hypot(dx,dy)&lt;24){tip.hidden=false;tex(tip,&#x27;P=(&#x27;+fmt(marker.x)+&#x27;,\\ &#x27;+fmt(marker.y)+&#x27;,\\ 0)&#x27;);tip.style.left=Math.max(8,Math.min(rect.width-220,marker.px+12))+&#x27;px&#x27;;tip.style.top=Math.max(8,marker.py-54)+&#x27;px&#x27;;}else if(!pin)tip.hidden=true;}
-el(&#x27;solid&#x27;).addEventListener(&#x27;pointermove&#x27;,pointInfo);el(&#x27;solid&#x27;).addEventListener(&#x27;click&#x27;,e=&gt;pointInfo(e,true));el(&#x27;solid&#x27;).addEventListener(&#x27;pointerleave&#x27;,()=&gt;el(&#x27;pointtip&#x27;).hidden=true);
+let orbit=null;
+el(&#x27;solid&#x27;).addEventListener(&#x27;pointerdown&#x27;,e=&gt;{orbit={x:e.clientX,y:e.clientY,yaw:+el(&#x27;yaw&#x27;).value,pitch:+el(&#x27;pitch&#x27;).value};el(&#x27;solid&#x27;).setPointerCapture(e.pointerId);});
+el(&#x27;solid&#x27;).addEventListener(&#x27;pointermove&#x27;,e=&gt;{if(!orbit)return;el(&#x27;yaw&#x27;).value=Math.max(-75,Math.min(75,orbit.yaw+(e.clientX-orbit.x)*.35));el(&#x27;pitch&#x27;).value=Math.max(-60,Math.min(60,orbit.pitch-(e.clientY-orbit.y)*.35));draw();});
+el(&#x27;solid&#x27;).addEventListener(&#x27;pointerup&#x27;,()=&gt;orbit=null);el(&#x27;solid&#x27;).addEventListener(&#x27;pointercancel&#x27;,()=&gt;orbit=null);
 syncAxis();
 el(&#x27;theme&#x27;).onchange=()=&gt;{document.documentElement.style.colorScheme=el(&#x27;theme&#x27;).value;draw();};
 root.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(e.key===&#x27;Enter&#x27;)update();});new ResizeObserver(()=&gt;draw()).observe(el(&#x27;solid&#x27;));update();
