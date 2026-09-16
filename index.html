@@ -1258,7 +1258,7 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  }
  if(!animationOnly)for(const label of Array.from(el(&#x27;profile&#x27;).querySelectorAll(&#x27;text&#x27;))){const box=label.getBBox(),fo=document.createElementNS(&#x27;http://www.w3.org/2000/svg&#x27;,&#x27;foreignObject&#x27;);fo.setAttribute(&#x27;x&#x27;,box.x-6);fo.setAttribute(&#x27;y&#x27;,box.y-2);fo.setAttribute(&#x27;width&#x27;,Math.max(36,box.width+12));fo.setAttribute(&#x27;height&#x27;,26);const span=document.createElement(&#x27;div&#x27;);span.style.fontSize=&#x27;12px&#x27;;try{tex(span,/[=]/.test(label.textContent)?math.parse(normalize(label.textContent)).toTex():mathCaption(label.textContent));}catch{tex(span,mathCaption(label.textContent));}fo.append(span);label.replaceWith(fo);}
  if(isShell()){tex(el(&#x27;angleout&#x27;),el(&#x27;angle&#x27;).value+&#x27;^{\\circ}&#x27;);shellView(s,C,q);if(!animationOnly)shellResults(s,q,C);return;}
- const savedSolidColors={...C};Object.assign(C,{bg:&#x27;#070c16&#x27;,fg:&#x27;#93e7f3&#x27;,line:&#x27;#254754&#x27;,outer:&#x27;#ef7705&#x27;,inner:&#x27;#ff5774&#x27;,curve:&#x27;#fff5dc&#x27;});
+ const savedSolidColors={...C};Object.assign(C,{bg:&#x27;#070c16&#x27;,fg:&#x27;#93e7f3&#x27;,line:&#x27;#254754&#x27;,outer:&#x27;#ef7705&#x27;,inner:&#x27;#39d9cc&#x27;,curve:&#x27;#fff5dc&#x27;});
  const {ctx,w,h}=setup(&#x27;solid&#x27;),yaw=+el(&#x27;yaw&#x27;).value*Math.PI/180,pitch=+el(&#x27;pitch&#x27;).value*Math.PI/180;
  ctx.fillStyle=C.bg;ctx.fillRect(0,0,w,h);
  const xmin=Math.min(0,s.a),xmax=Math.max(0,s.b),ymin=Math.min(-s.max,-s.c),ymax=Math.max(s.max,-s.c),midX=(xmin+xmax)/2,midY=(ymin+ymax)/2;
@@ -1277,14 +1277,14 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  
  const span=s.b-s.a;
  const shade=(color,factor)=&gt;{if(window.d3){const colorObj=d3.color(color);if(colorObj)return colorObj.darker((1-factor)*3).formatRgb();}return color;};
- faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha*.40));
+ faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha*.82));
 
  // Fine meridians and rings reveal the surface curvature.
- if(!stack&amp;&amp;sweep&gt;0){ctx.save();ctx.globalAlpha=.55;for(let j=0;j&lt;=14;j++){const x=s.a+span*j/14;circle(x,s.radii(x).R,&#x27;#ffac24&#x27;);}for(let k=0;k&lt;=18;k++){const angle=k*sweep/18;line3(Array.from({length:100},(_,j)=&gt;{const x=s.a+span*j/99,r=s.radii(x).R;return[x,r*Math.cos(angle),r*Math.sin(angle)];}),&#x27;#ffac24&#x27;,.65);}ctx.restore();}
+ if(!stack&amp;&amp;sweep&gt;0){ctx.save();ctx.globalAlpha=.28;for(let j=0;j&lt;=14;j++){const x=s.a+span*j/14;circle(x,s.radii(x).R,&#x27;#ffac24&#x27;);}for(let k=0;k&lt;=18;k++){const angle=k*sweep/18;line3(Array.from({length:100},(_,j)=&gt;{const x=s.a+span*j/99,r=s.radii(x).R;return[x,r*Math.cos(angle),r*Math.sin(angle)];}),&#x27;#ffac24&#x27;,.65);}ctx.restore();}
 
- function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*sweep/80),r*Math.sin(k*sweep/80)));ctx.beginPath();pts.forEach((p,i)=&gt;i?ctx.lineTo(...p.slice(0,2)):ctx.moveTo(...p.slice(0,2)));ctx.strokeStyle=col;ctx.lineWidth=1;ctx.stroke();}
+ function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*sweep/80),r*Math.sin(k*sweep/80)));ctx.beginPath();pts.forEach((p,i)=&gt;i?ctx.lineTo(...p.slice(0,2)):ctx.moveTo(...p.slice(0,2)));ctx.strokeStyle=col;ctx.lineWidth=col===C.inner?2.5:1;ctx.stroke();}
  if(stack&amp;&amp;sweep&gt;=Math.PI*2){ctx.save();ctx.globalAlpha=.45;s.parts.forEach(p=&gt;circle(p.left,p.R,C.fg));ctx.restore();}if(sweep&gt;=Math.PI*2){circle(q.x,q.R,C.inner);if(q.r)circle(q.x,q.r,C.inner);}
- if(sweep&gt;0){for(let j=0;j&lt;64;j++){const a=j*sweep/64,b=(j+1)*sweep/64;path([[q.x,q.R*Math.cos(a),q.R*Math.sin(a)],[q.x,q.R*Math.cos(b),q.R*Math.sin(b)],[q.x,q.r*Math.cos(b),q.r*Math.sin(b)],[q.x,q.r*Math.cos(a),q.r*Math.sin(a)]].map(p=&gt;xyz(...p)),C.inner,null,.55);}}
+ if(sweep&gt;0){for(let j=0;j&lt;64;j++){const a=j*sweep/64,b=(j+1)*sweep/64;path([[q.x,q.R*Math.cos(a),q.R*Math.sin(a)],[q.x,q.R*Math.cos(b),q.R*Math.sin(b)],[q.x,q.r*Math.cos(b),q.r*Math.sin(b)],[q.x,q.r*Math.cos(a),q.r*Math.sin(a)]].map(p=&gt;xyz(...p)),C.inner,null,.94);}}
  function line3(points,color,width=1,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;{const v=xyz(...p);i?ctx.lineTo(v[0],v[1]):ctx.moveTo(v[0],v[1]);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
  function axisArrow(point,previous){const p=xyz(...point),q=xyz(...previous),a=Math.atan2(p[1]-q[1],p[0]-q[0]);ctx.fillStyle=C.fg;ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(p[0]-13*Math.cos(a-.35),p[1]-13*Math.sin(a-.35));ctx.lineTo(p[0]-13*Math.cos(a+.35),p[1]-13*Math.sin(a+.35));ctx.closePath();ctx.fill();}
  const labels=[];
