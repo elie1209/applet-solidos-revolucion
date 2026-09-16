@@ -1334,15 +1334,15 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  Object.assign(C,savedSolidColors);
  if(animationOnly)return;
  el(&#x27;cut&#x27;).style.height=&#x27;390px&#x27;;
- const cut=setup(&#x27;cut&#x27;),cc=cut.ctx,cy=160,rad=Math.min(cut.w*.28,90),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0;
+ const cut=setup(&#x27;cut&#x27;),cc=cut.ctx,cy=160,rad=Math.min(cut.w*.28,90)*q.R/Math.max(s.max,.001),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0;
  const depth=Math.max(18,Math.min(75,rad*q.width/Math.max(q.R,.001))),cx=cut.w/2-depth/2;
  const point=(radius,t,front)=&gt;[cx+(front?depth:0)+radius*.65*Math.cos(t),cy-radius*Math.sin(t)];
  function ellipse(radius,front){cc.beginPath();cc.ellipse(cx+(front?depth:0),cy,radius*.65,radius,0,0,Math.PI*2);}
  cc.strokeStyle=C.fg;cc.setLineDash([5,5]);cc.beginPath();cc.moveTo(cx-rad*.65-30,cy);cc.lineTo(cx+depth+rad*.65+30,cy);cc.stroke();cc.setLineDash([]);
- ellipse(R,false);cc.fillStyle=C.inner;cc.globalAlpha=.3;cc.fill();cc.globalAlpha=1;cc.strokeStyle=C.inner;cc.stroke();
- for(let j=0;j&lt;48;j++){const t=j*Math.PI*2/48,u=(j+1)*Math.PI*2/48;for(const radius of [R,r]){if(!radius)continue;const pts=[point(radius,t,false),point(radius,u,false),point(radius,u,true),point(radius,t,true)];cc.beginPath();pts.forEach((p,i)=&gt;i?cc.lineTo(...p):cc.moveTo(...p));cc.closePath();cc.fillStyle=d3.color(C.inner).darker(.25+.65*(1+Math.sin(t))/2).formatRgb();cc.fill();}}
- cc.beginPath();cc.ellipse(cx+depth,cy,R*.65,R,0,0,Math.PI*2);if(r){cc.moveTo(cx+depth+r*.65,cy);cc.ellipse(cx+depth,cy,r*.65,r,0,0,Math.PI*2,true);}const faceShade=cc.createLinearGradient(cx-R,cy-R,cx+R,cy+R);faceShade.addColorStop(0,d3.color(C.inner).brighter(.6).formatRgb());faceShade.addColorStop(1,d3.color(C.inner).darker(.5).formatRgb());cc.fillStyle=faceShade;cc.fill(&#x27;evenodd&#x27;);cc.strokeStyle=C.inner;cc.lineWidth=2;cc.stroke();
- if(r){ellipse(r,true);cc.fillStyle=C.bg;cc.fill();cc.strokeStyle=C.inner;cc.stroke();}
+ ellipse(R,false);cc.fillStyle=&#x27;#378ff0&#x27;;cc.globalAlpha=.3;cc.fill();cc.globalAlpha=1;cc.strokeStyle=&#x27;#ffffff&#x27;;cc.stroke();
+ for(let j=0;j&lt;48;j++){const t=j*Math.PI*2/48,u=(j+1)*Math.PI*2/48;for(const radius of [R,r]){if(!radius)continue;const pts=[point(radius,t,false),point(radius,u,false),point(radius,u,true),point(radius,t,true)];cc.beginPath();pts.forEach((p,i)=&gt;i?cc.lineTo(...p):cc.moveTo(...p));cc.closePath();cc.fillStyle=d3.color(&#x27;#378ff0&#x27;).darker(.25+.65*(1+Math.sin(t))/2).formatRgb();cc.fill();}}
+ cc.beginPath();cc.ellipse(cx+depth,cy,R*.65,R,0,0,Math.PI*2);if(r){cc.moveTo(cx+depth+r*.65,cy);cc.ellipse(cx+depth,cy,r*.65,r,0,0,Math.PI*2,true);}const faceShade=cc.createLinearGradient(cx-R,cy-R,cx+R,cy+R);faceShade.addColorStop(0,d3.color(&#x27;#378ff0&#x27;).brighter(.6).formatRgb());faceShade.addColorStop(1,d3.color(&#x27;#378ff0&#x27;).darker(.5).formatRgb());cc.fillStyle=faceShade;cc.fill(&#x27;evenodd&#x27;);cc.strokeStyle=&#x27;#ffffff&#x27;;cc.lineWidth=2;cc.stroke();
+ if(r){ellipse(r,true);cc.fillStyle=C.bg;cc.fill();cc.strokeStyle=&#x27;#ffffff&#x27;;cc.stroke();}
  cc.font=&#x27;italic 18px Georgia&#x27;;cc.fillStyle=C.fg;
  function arrow(x1,y1,x2,y2,color){cc.strokeStyle=color;cc.fillStyle=color;cc.lineWidth=1.5;cc.beginPath();cc.moveTo(x1,y1);cc.lineTo(x2,y2);cc.stroke();const a=Math.atan2(y2-y1,x2-x1);cc.beginPath();cc.moveTo(x2,y2);cc.lineTo(x2-7*Math.cos(a-.45),y2-7*Math.sin(a-.45));cc.lineTo(x2-7*Math.cos(a+.45),y2-7*Math.sin(a+.45));cc.closePath();cc.fill();}
  const center=cx+depth;
