@@ -1035,6 +1035,7 @@ svg.lucide {
 }
 
 html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details{display:grid;gap:8px;padding:12px 0}#revolucion .r-cut-details&gt;div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;border-bottom:1px solid var(--border);padding-bottom:7px}
+#revolucion .solid-wrap .canvas-math .katex{color:inherit}#revolucion .solid-wrap canvas{border-radius:14px}
 &lt;/style&gt;
 &lt;style&gt;
 :root{color-scheme:light}html body{padding:0!important;background:var(--background);color:var(--foreground)}
@@ -1257,7 +1258,9 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  }
  if(!animationOnly)for(const label of Array.from(el(&#x27;profile&#x27;).querySelectorAll(&#x27;text&#x27;))){const box=label.getBBox(),fo=document.createElementNS(&#x27;http://www.w3.org/2000/svg&#x27;,&#x27;foreignObject&#x27;);fo.setAttribute(&#x27;x&#x27;,box.x-6);fo.setAttribute(&#x27;y&#x27;,box.y-2);fo.setAttribute(&#x27;width&#x27;,Math.max(36,box.width+12));fo.setAttribute(&#x27;height&#x27;,26);const span=document.createElement(&#x27;div&#x27;);span.style.fontSize=&#x27;12px&#x27;;try{tex(span,/[=]/.test(label.textContent)?math.parse(normalize(label.textContent)).toTex():mathCaption(label.textContent));}catch{tex(span,mathCaption(label.textContent));}fo.append(span);label.replaceWith(fo);}
  if(isShell()){tex(el(&#x27;angleout&#x27;),el(&#x27;angle&#x27;).value+&#x27;^{\\circ}&#x27;);shellView(s,C,q);if(!animationOnly)shellResults(s,q,C);return;}
+ const savedSolidColors={...C};Object.assign(C,{bg:&#x27;#070c16&#x27;,fg:&#x27;#93e7f3&#x27;,line:&#x27;#254754&#x27;,outer:&#x27;#ef7705&#x27;,inner:&#x27;#ff5774&#x27;,curve:&#x27;#fff5dc&#x27;});
  const {ctx,w,h}=setup(&#x27;solid&#x27;),yaw=+el(&#x27;yaw&#x27;).value*Math.PI/180,pitch=+el(&#x27;pitch&#x27;).value*Math.PI/180;
+ ctx.fillStyle=C.bg;ctx.fillRect(0,0,w,h);
  const xmin=Math.min(0,s.a),xmax=Math.max(0,s.b),ymin=Math.min(-s.max,-s.c),ymax=Math.max(s.max,-s.c),midX=(xmin+xmax)/2,midY=(ymin+ymax)/2;
  const scale=Math.min((w-90)/Math.hypot(xmax-xmin,2*s.max),(h-110)/Math.hypot(ymax-ymin,(xmax-xmin)*Math.sin(pitch),2*s.max*Math.sin(pitch)))*.88;
  function xyz(x,y,z){x-=midX;y-=midY;if(vertical()){const temp=x;x=y;y=temp;}const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+u*scale,h/2-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
@@ -1272,18 +1275,18 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  if(stack||j===0||j===sections.length-1){for(const [x,v] of [[p.left,l],[p.right,r]]){const pts=[[x,v.R*Math.cos(a),v.R*Math.sin(a)],[x,v.R*Math.cos(b),v.R*Math.sin(b)],[x,v.r*Math.cos(b),v.r*Math.sin(b)],[x,v.r*Math.cos(a),v.r*Math.sin(a)]].map(v=&gt;xyz(...v));faces.push({pts,z:pts.reduce((v,p)=&gt;v+p[2],0)/4,color:C.outer,alpha:1,shade:.86,selected:stack&amp;&amp;(p.original??j)===sel});}}
  }});
  
- // Ground grid and surface shading use the same projection as the solid.
- const floor=ymin-.18*s.max,span=s.b-s.a;
- ctx.save();ctx.globalAlpha=.45;
- for(let j=0;j&lt;=8;j++){const gx=xmin+(xmax-xmin)*j/8,gz=-s.max*1.3+2.6*s.max*j/8;line3([[gx,floor,-s.max*1.3],[gx,floor,s.max*1.3]],C.line);line3([[xmin,floor,gz],[xmax,floor,gz]],C.line);}
- ctx.restore();
+ const span=s.b-s.a;
  const shade=(color,factor)=&gt;{if(window.d3){const colorObj=d3.color(color);if(colorObj)return colorObj.darker((1-factor)*3).formatRgb();}return color;};
- faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha*.30));
+ faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha*.40));
+
+ // Fine meridians and rings reveal the surface curvature.
+ if(!stack&amp;&amp;sweep&gt;0){ctx.save();ctx.globalAlpha=.55;for(let j=0;j&lt;=14;j++){const x=s.a+span*j/14;circle(x,s.radii(x).R,&#x27;#ffac24&#x27;);}for(let k=0;k&lt;=18;k++){const angle=k*sweep/18;line3(Array.from({length:100},(_,j)=&gt;{const x=s.a+span*j/99,r=s.radii(x).R;return[x,r*Math.cos(angle),r*Math.sin(angle)];}),&#x27;#ffac24&#x27;,.65);}ctx.restore();}
 
  function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*sweep/80),r*Math.sin(k*sweep/80)));ctx.beginPath();pts.forEach((p,i)=&gt;i?ctx.lineTo(...p.slice(0,2)):ctx.moveTo(...p.slice(0,2)));ctx.strokeStyle=col;ctx.lineWidth=1;ctx.stroke();}
  if(stack&amp;&amp;sweep&gt;=Math.PI*2){ctx.save();ctx.globalAlpha=.45;s.parts.forEach(p=&gt;circle(p.left,p.R,C.fg));ctx.restore();}if(sweep&gt;=Math.PI*2){circle(q.x,q.R,C.inner);if(q.r)circle(q.x,q.r,C.inner);}
  if(sweep&gt;0){for(let j=0;j&lt;64;j++){const a=j*sweep/64,b=(j+1)*sweep/64;path([[q.x,q.R*Math.cos(a),q.R*Math.sin(a)],[q.x,q.R*Math.cos(b),q.R*Math.sin(b)],[q.x,q.r*Math.cos(b),q.r*Math.sin(b)],[q.x,q.r*Math.cos(a),q.r*Math.sin(a)]].map(p=&gt;xyz(...p)),C.inner,null,.55);}}
  function line3(points,color,width=1,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;{const v=xyz(...p);i?ctx.lineTo(v[0],v[1]):ctx.moveTo(v[0],v[1]);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
+ function axisArrow(point,previous){const p=xyz(...point),q=xyz(...previous),a=Math.atan2(p[1]-q[1],p[0]-q[0]);ctx.fillStyle=C.fg;ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(p[0]-13*Math.cos(a-.35),p[1]-13*Math.sin(a-.35));ctx.lineTo(p[0]-13*Math.cos(a+.35),p[1]-13*Math.sin(a+.35));ctx.closePath();ctx.fill();}
  const labels=[];
  function label3(p,text,dx=12,dy=-15){const v=xyz(...p);labels.push({text,x:v[0]+dx,y:v[1]+dy});}
  function paintLabels(){
@@ -1297,6 +1300,7 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  line3([[xmin-pad,-s.c,0],[xmax+pad,-s.c,0]],C.fg);label3([xmax+pad,-s.c,0],variable());
  line3([[0,ymin-yp,0],[0,ymax+yp,0]],C.fg);label3([0,ymax+yp,0],vertical()?&#x27;x&#x27;:&#x27;y&#x27;);
  line3([[0,-s.c,-s.max*1.1],[0,-s.c,s.max*1.1]],C.line);label3([0,-s.c,s.max*1.1],&#x27;z&#x27;);
+ axisArrow([xmax+pad,-s.c,0],[xmin-pad,-s.c,0]);axisArrow([0,ymax+yp,0],[0,ymin-yp,0]);axisArrow([0,-s.c,s.max*1.1],[0,-s.c,-s.max*1.1]);
  for(let j=0;j&lt;=3;j++){const x=xmin+(xmax-xmin)*j/3;line3([[x,-s.c-.04*s.max,0],[x,-s.c+.04*s.max,0]],C.fg);label3([x,-s.c,0],Number(x.toPrecision(3)).toString(),0,32);}
  for(let j=0;j&lt;=2;j++){const y=ymin+(ymax-ymin)*j/2;if(Math.abs(y+s.c)&lt;1e-9)continue;line3([[-pad*.35,y,0],[pad*.35,y,0]],C.fg);const text=Number((y+s.c).toPrecision(3)).toString();label3([0,y,0],text,-ctx.measureText(text).width/2-24,0);}
  line3([[s.a,0,0],[s.b,0,0]],C.fg,1,[5,4]);
@@ -1312,6 +1316,7 @@ function draw(animationOnly=false){if(!state)return;const s=state,C=colors(),sel
  paintLabels();
  marker=null;
 
+ Object.assign(C,savedSolidColors);
  if(animationOnly)return;
  el(&#x27;cut&#x27;).style.height=&#x27;390px&#x27;;
  const cut=setup(&#x27;cut&#x27;),cc=cut.ctx,cy=160,rad=Math.min(cut.w*.28,90),R=q.R&gt;0?rad:0,r=q.R&gt;0?rad*q.r/q.R:0;
