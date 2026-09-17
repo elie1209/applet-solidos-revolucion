@@ -1218,7 +1218,7 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 #revolucion .riemann-card #rrule{max-width:210px}
 #revolucion .riemann-card&gt;.viz-row&gt;.form-label{flex-basis:210px}
 @media(max-width:550px){#revolucion .configuration-grid .axis-column&gt;.viz-row{grid-template-columns:minmax(120px,1fr) 110px}#revolucion .configuration-grid .axis-menu{width:100%}#revolucion .riemann-card label:has(.number-stepper)&gt;.field-caption{min-width:0}}
-&lt;/style&gt;&lt;style&gt;#revolucion #raxislabel{display:none!important}#revolucion .configuration-grid .axis-column&gt;.viz-row{align-items:center!important}#revolucion .axis-column&gt;.viz-row&gt;.form-label{margin:0!important}#revolucion .axis-menu summary,#revolucion #rc,#revolucion .configuration-grid #rgo{height:44px!important;min-height:44px!important;box-sizing:border-box}#revolucion .axis-menu summary{margin:0!important}&lt;/style&gt;&lt;/head&gt;
+&lt;/style&gt;&lt;style&gt;#revolucion #raxislabel{display:none!important}#revolucion .configuration-grid .axis-column&gt;.viz-row{align-items:center!important}#revolucion .axis-column&gt;.viz-row&gt;.form-label{margin:0!important}#revolucion .axis-menu summary,#revolucion #rc,#revolucion .configuration-grid #rgo{height:44px!important;min-height:44px!important;box-sizing:border-box}#revolucion .axis-menu summary{margin:0!important}&lt;/style&gt;&lt;style&gt;#revolucion .rotation-stages{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}#revolucion .rotation-stages button{border-radius:999px;padding:6px 12px}#revolucion #rcut{min-height:330px}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
 &lt;span class=&quot;text-small&quot;&gt;Laboratorio de Cálculo Integral&lt;/span&gt;
@@ -1272,33 +1272,55 @@ function setMethod(value){stopRotation();method=value;syncAxis();update();if(val
 function methodUI(){el(&#x27;viewcontrol&#x27;).hidden=isShell();const cut=el(&#x27;cut&#x27;).closest(&#x27;section&#x27;);if(cut){cut.querySelector(&#x27;h3&#x27;).textContent=isShell()?&#x27;Capa separada del sólido&#x27;:&#x27;Disco o arandela en 3D&#x27;;cut.querySelector(&#x27;.text-small&#x27;).textContent=isShell()?&#x27;La capa es un tubo delgado: ρ indica el radio, h la altura y Δ el espesor radial.&#x27;:&#x27;El corte se muestra en perspectiva: R mide el radio exterior, r el hueco y Δ el espesor entre sus caras.&#x27;;}for(const button of el(&#x27;methods&#x27;).querySelectorAll(&#x27;button&#x27;)){const selected=button.dataset.method===method;button.setAttribute(&#x27;aria-pressed&#x27;,String(selected));button.classList.toggle(&#x27;selected&#x27;,selected);}el(&#x27;methodhelp&#x27;).textContent=isShell()?&#x27;Capas: los cortes son paralelos al eje. El radio es la distancia a la recta de giro; la altura es la distancia entre las funciones. Usa un intervalo a un solo lado del eje para no contar volumen dos veces.&#x27;:method===&#x27;disks&#x27;?&#x27;Discos: cada corte llega hasta el eje de giro y no tiene hueco.&#x27;:&#x27;Arandelas: cada corte tiene radio exterior e interior. Si el interior es cero, ese corte es un disco.&#x27;;}
 function integrandAt(seg,x,c){if(isShell())return 2*Math.PI*Math.abs(x-c)*Math.abs(seg.f(x)-seg.g(x));const q=seg.radii(x);return Math.PI*(q.R*q.R-q.r*q.r);}
 function shellView(s,C,selected,only=false){
- const {ctx,w,h}=setup(only?&#x27;cut&#x27;:&#x27;solid&#x27;),yaw=(only?-25:+el(&#x27;yaw&#x27;).value)*Math.PI/180,pitch=(only?20:+el(&#x27;pitch&#x27;).value)*Math.PI/180,sweep=only?Math.PI*2:+el(&#x27;angle&#x27;).value*Math.PI/180;
- const parts=only||!el(&#x27;stack&#x27;).checked?[selected]:s.parts;
- const all=s.segments.flatMap(seg=&gt;Array.from({length:81},(_,i)=&gt;[seg.f(seg.a+(seg.b-seg.a)*i/80),seg.g(seg.a+(seg.b-seg.a)*i/80)]).flat()),lo=Math.min(0,...all),hi=Math.max(0,...all),radius=Math.max(Math.abs(s.a-s.c),Math.abs(s.b-s.c),.01),scale=Math.min((w-80)/(radius*2.6),(h-100)/(hi-lo+radius*.8||1))*.95;
- const center=(lo+hi)/2;
- function project(rad,angle,ax){let x=rad*Math.cos(angle),y=ax-center,z=rad*Math.sin(angle);if(!axisVertical()){[x,y]=[y,x];}const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return[w/2+u*scale,h/2-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
- const faces=[];parts.forEach(p=&gt;{const r0=Math.min(Math.abs(p.left-s.c),Math.abs(p.right-s.c)),r1=Math.max(Math.abs(p.left-s.c),Math.abs(p.right-s.c)),low=Math.min(p.segment.f(p.x),p.segment.g(p.x)),high=Math.max(p.segment.f(p.x),p.segment.g(p.x)),phase=p.x&lt;s.c?Math.PI:0,K=36;
- for(let j=0;j&lt;K&amp;&amp;sweep&gt;0;j++){const a=phase+j*sweep/K,b=phase+(j+1)*sweep/K;const push=pts=&gt;{const v=pts.map(p=&gt;project(...p));faces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,color:p===selected||only?C.inner:C.outer,shade:.2+.5*(1+Math.cos(a))/2});};
- for(const r of [r0,r1])push([[r,a,low],[r,b,low],[r,b,high],[r,a,high]]);
- for(const y of [low,high])push([[r0,a,y],[r1,a,y],[r1,b,y],[r0,b,y]]);
- }});
- faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;{ctx.beginPath();f.v.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=d3.color(f.color).darker(f.shade).formatRgb();ctx.globalAlpha=.30;ctx.fill();ctx.globalAlpha=1;});
- function line(points,color){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.stroke();}
- // Meridians and rims distinguish the inner and outer faces of the layer.
- for(const part of parts){const low=Math.min(part.segment.f(part.x),part.segment.g(part.x)),high=Math.max(part.segment.f(part.x),part.segment.g(part.x));for(const rad of [Math.abs(part.left-s.c),Math.abs(part.right-s.c)])for(const ax of [low,high])line(Array.from({length:81},(_,i)=&gt;project(rad,i*sweep/80,ax)),C.inner);}
- if(!only){
- const coord=(v,z)=&gt;project(Math.abs(v-s.c),v&lt;s.c?Math.PI:0,z);
- for(const [key,col] of [[&#x27;f&#x27;,C.curve],[&#x27;g&#x27;,C.outer]])for(const seg of s.segments)line(Array.from({length:121},(_,i)=&gt;{const v=seg.a+(seg.b-seg.a)*i/120;return coord(v,seg[key](v));}),col);
- const start=coord(Math.min(0,s.a,s.c)-radius*.15,0),end=coord(Math.max(0,s.b,s.c)+radius*.25,0);line([start,end],C.fg);ctx.fillStyle=C.fg;ctx.fillText(axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;,end[0]+8,end[1]);
- const tickValues=[s.a,selected.x,s.c,s.b].filter((v,i,a)=&gt;a.findIndex(z=&gt;Math.abs(z-v)&lt;1e-7)===i);for(const v of tickValues.filter(v=&gt;Math.abs(v-selected.x)&gt;1e-7)){const p=coord(v,0);line([[p[0],p[1]-4],[p[0],p[1]+4]],C.fg);ctx.fillText(fmt(v),p[0]-4,p[1]+23);}
- const f=selected.segment.f(selected.x),g=selected.segment.g(selected.x);line([coord(selected.x,f),coord(selected.x,g)],C.inner);
+ const {ctx,w,h}=setup(only?&#x27;cut&#x27;:&#x27;solid&#x27;),dark=!only,fg=dark?&#x27;#e7f5fa&#x27;:C.fg,orange=&#x27;#e88a19&#x27;,cyan=&#x27;#2dd4bf&#x27;;
+ if(dark){ctx.fillStyle=&#x27;#080f1b&#x27;;ctx.fillRect(0,0,w,h);}
+ const yaw=(only?-32:+el(&#x27;yaw&#x27;).value)*Math.PI/180,pitch=(only?25:+el(&#x27;pitch&#x27;).value)*Math.PI/180,sweep=(only?360:+el(&#x27;angle&#x27;).value)*Math.PI/180;
+ const low=p=&gt;Math.min(p.segment.f(p.x),p.segment.g(p.x)),high=p=&gt;Math.max(p.segment.f(p.x),p.segment.g(p.x));
+ const values=s.segments.flatMap(seg=&gt;Array.from({length:81},(_,i)=&gt;{const x=seg.a+(seg.b-seg.a)*i/80;return[seg.f(x),seg.g(x)];}).flat());
+ const lo=only?low(selected):Math.min(0,...values),hi=only?high(selected):Math.max(0,...values),radius=only?Math.max(Math.abs(selected.left-s.c),Math.abs(selected.right-s.c),.01):Math.max(Math.abs(s.a-s.c),Math.abs(s.b-s.c),.01),center=(hi+lo)/2;
+ const scale=Math.min((w-90)/(2*radius+(!axisVertical()?hi-lo:0)),(h-115)/(axisVertical()?Math.max(.1,hi-lo)*Math.abs(Math.cos(pitch))+2*radius*Math.abs(Math.sin(pitch)):2*radius+Math.abs(hi-lo)*.3))*.88;
+ function project(rad,a,ax){let x=rad*Math.cos(a),y=ax-center,z=rad*Math.sin(a);if(!axisVertical())[x,y]=[y,x];const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return[w/2+u*scale,(h-45)/2+15-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
+ function line(points,color=fg,width=1.5,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
+ function arrow(a,b,color=fg){line([a,b],color,2);const t=Math.atan2(b[1]-a[1],b[0]-a[0]);line([[b[0]-7*Math.cos(t-.4),b[1]-7*Math.sin(t-.4)],b,[b[0]-7*Math.cos(t+.4),b[1]-7*Math.sin(t+.4)]],color,2);}
+ function label(text,x,y,color=fg){ctx.fillStyle=color;ctx.fillText(text,x,y);}
+ const faces=[];
+ function layer(p,color,alpha){const r0=Math.min(Math.abs(p.left-s.c),Math.abs(p.right-s.c)),r1=Math.max(Math.abs(p.left-s.c),Math.abs(p.right-s.c)),a0=p.x&lt;s.c?Math.PI:0,L=low(p),H=high(p),K=64;
+  const add=(points,shade)=&gt;{const v=points.map(p=&gt;project(...p));faces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/v.length,color:d3.color(color).darker(shade).formatRgb(),alpha});};
+  for(let j=0;j&lt;K&amp;&amp;sweep&gt;0;j++){const a=a0+j*sweep/K,b=a0+(j+1)*sweep/K;
+   for(const r of [r0,r1])add([[r,a,L],[r,b,L],[r,b,H],[r,a,H]],.25+.6*(1+Math.sin(a))/2);
+   for(const z of [L,H])add([[r0,a,z],[r1,a,z],[r1,b,z],[r0,b,z]],.1);
+  }
+  if(sweep&lt;Math.PI*2-.001)for(const a of [a0,a0+sweep])add([[r0,a,L],[r1,a,L],[r1,a,H],[r0,a,H]],.1);
  }
- const base=project(0,0,lo),top=project(0,0,hi+Math.max((hi-lo)*.25,radius*.8));line([base,top],C.fg);ctx.fillStyle=C.fg;ctx.fillText((axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),top[0]+8,top[1]-6);
- const rho=Math.abs(selected.x-s.c),mid=(selected.segment.f(selected.x)+selected.segment.g(selected.x))/2,p0=project(0,0,mid),p1=project(rho,0,mid);line([p0,p1],C.fg);ctx.fillText(&#x27;ρ&#x27;,(p0[0]+p1[0])/2,(p0[1]+p1[1])/2-10);
- const bottom=project(rho,0,Math.min(selected.segment.f(selected.x),selected.segment.g(selected.x))),upper=project(rho,0,Math.max(selected.segment.f(selected.x),selected.segment.g(selected.x)));line([bottom,upper],C.fg);ctx.fillText(&#x27;h&#x27;,upper[0]+12,(bottom[1]+upper[1])/2);
- ctx.fillText(only?&#x27;Capa cilíndrica seleccionada&#x27;:&#x27;Envolvente generada por la franja&#x27;,12,23);
- ctx.fillText(&#x27;Δ&#x27;+variable()+&#x27; = &#x27;+fmt(selected.width),12,h-20);
+ if(!only&amp;&amp;el(&#x27;stack&#x27;).checked){for(const p of s.parts)layer(p,orange,.09);}
+ if(!only&amp;&amp;!el(&#x27;stack&#x27;).checked){for(const seg of s.segments)for(const key of [&#x27;f&#x27;,&#x27;g&#x27;])for(let i=0;i&lt;32;i++)for(let j=0;j&lt;48;j++){
+  const x0=seg.a+(seg.b-seg.a)*i/32,x1=seg.a+(seg.b-seg.a)*(i+1)/32,phase=(x0+x1)/2&lt;s.c?Math.PI:0,a=phase+j*sweep/48,b=phase+(j+1)*sweep/48;
+  const v=[[x0,a],[x1,a],[x1,b],[x0,b]].map(([x,t])=&gt;project(Math.abs(x-s.c),t,seg[key](x)));faces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,color:orange,alpha:.22});
+ }}
+ if(!only&amp;&amp;!el(&#x27;stack&#x27;).checked)for(const seg of s.segments)for(const x of [seg.a,seg.b])for(let j=0;j&lt;48;j++){const phase=x&lt;s.c?Math.PI:0,a=phase+j*sweep/48,b=phase+(j+1)*sweep/48,r=Math.abs(x-s.c),v=[[r,a,seg.f(x)],[r,b,seg.f(x)],[r,b,seg.g(x)],[r,a,seg.g(x)]].map(p=&gt;project(...p));faces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,color:orange,alpha:.12});}
+ layer(selected,cyan,only?.88:.80);
+ faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;{ctx.beginPath();f.v.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=f.color;ctx.globalAlpha=f.alpha;ctx.fill();});ctx.globalAlpha=1;
+ const phase=selected.x&lt;s.c?Math.PI:0,r0=Math.min(Math.abs(selected.left-s.c),Math.abs(selected.right-s.c)),r1=Math.max(Math.abs(selected.left-s.c),Math.abs(selected.right-s.c));
+ for(const r of [r0,r1])for(const z of [low(selected),high(selected)])line(Array.from({length:81},(_,i)=&gt;project(r,phase+i*sweep/80,z)),only?fg:cyan,1.5);
+ for(let j=0;j&lt;=12;j++){const a=phase+j*sweep/12;line([project(r1,a,low(selected)),project(r1,a,high(selected))],cyan,.6);}
+ const coord=(x,y)=&gt;project(Math.abs(x-s.c),x&lt;s.c?Math.PI:0,y);
+ if(!only){for(const [key,color] of [[&#x27;f&#x27;,&#x27;#ffffff&#x27;],[&#x27;g&#x27;,orange]])for(const seg of s.segments)line(Array.from({length:101},(_,i)=&gt;{const x=seg.a+(seg.b-seg.a)*i/100;return coord(x,seg[key](x));}),color,2);
+  arrow(coord(s.c-radius*1.15,0),coord(s.c+radius*1.2,0),&#x27;#a1dfea&#x27;);label(axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;,...coord(s.c+radius*1.2,0));
+  for(const x of [s.a,s.b]){const p=coord(x,0);line([[p[0],p[1]-3],[p[0],p[1]+3]]);label(fmt(x),p[0]-4,p[1]+19);}
+ }
+ const aBase=project(0,0,lo-radius*.12),aTop=project(0,0,hi+radius*.2);line([aBase,aTop],&#x27;#9edce8&#x27;,1.5,[5,4]);arrow(project(0,0,hi),aTop,&#x27;#9edce8&#x27;);
+ label(&#x27;Eje: &#x27;+(axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),12,23,&#x27;#9edce8&#x27;);
+ const rho=Math.abs(selected.x-s.c),L=low(selected),H=high(selected),front=phase+sweep;
+ const p0=project(0,front,L),p1=project(rho,front,L),p2=project(rho,front,H);
+ arrow(p0,p1,fg);line([p1,p2],fg,3);label(&#x27;ρ&#x27;,(p0[0]+p1[0])/2+5,(p0[1]+p1[1])/2-8);label(&#x27;h&#x27;,p2[0]+10,(p1[1]+p2[1])/2);
+ // The bright segment is the generating strip at the current rotation angle.
+ if(!only)line([project(r1,front,L),project(r1,front,H)],&#x27;#ffffff&#x27;,3);
+ const v=variable();label(&#x27;$\\rho(&#x27;+v+&#x27;)=|&#x27;+v+&#x27;-(&#x27;+s.c+&#x27;)|&#x27;,12,h-43);
+ const ft=math.parse(normalize(selected.segment.fs)).toTex().replace(/\bx\b/g,v),gt=math.parse(normalize(selected.segment.gs)).toTex().replace(/\bx\b/g,v);
+ label(&#x27;$h(&#x27;+v+&#x27;)=|(&#x27;+ft+&#x27;)-(&#x27;+gt+&#x27;)|&#x27;,12,h-20);
+ if(only){const a=project(r0,phase+Math.PI/2,H),b=project(r1,phase+Math.PI/2,H);line([a,b],fg,3);label(&#x27;$\\Delta &#x27;+v,Math.min(w-65,b[0]+10),Math.max(45,b[1]-12));}
 }
+
 function shellResults(s,q,C){shellView(s,C,q,true);const rho=Math.abs(q.x-s.c),height=Math.abs(q.segment.f(q.x)-q.segment.g(q.x)),sum=s.parts.reduce((v,p)=&gt;v+integrandAt(p.segment,p.x,s.c)*p.width,0);
  const rows=[[&#x27;Radio de la capa&#x27;,&#x27;\\rho = &#x27;+fmt(rho)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Altura de la capa&#x27;,&#x27;h = &#x27;+fmt(height)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Espesor&#x27;,&#x27;\\Delta &#x27;+variable()+&#x27; = &#x27;+fmt(q.width)+&#x27;\\,\\mathrm{u}&#x27;],[&#x27;Volumen aproximado de la capa&#x27;,&#x27;\\Delta V_i = &#x27;+fmt(2*Math.PI*rho*height*q.width)+&#x27;\\,\\mathrm{u}^3&#x27;],[&#x27;Suma de Riemann&#x27;,&#x27;V_n = &#x27;+fmt(sum)+&#x27;\\,\\mathrm{u}^3&#x27;],[&#x27;Volumen numérico&#x27;,&#x27;V \\approx &#x27;+fmt(s.volume)+&#x27;\\,\\mathrm{u}^3&#x27;]];
  for(const target of [&#x27;cutdetails&#x27;,&#x27;values&#x27;]){el(target).replaceChildren();for(const [label,value] of rows.slice(0,target===&#x27;cutdetails&#x27;?3:6)){const row=document.createElement(&#x27;div&#x27;);row.className=&#x27;r-result&#x27;;const name=document.createElement(&#x27;span&#x27;),val=document.createElement(&#x27;span&#x27;);name.textContent=label;tex(val,value);row.append(name,val);el(target).append(row);}}
@@ -1558,10 +1580,10 @@ el(&#x27;cutview&#x27;).oninput=()=&gt;draw();
 el(&#x27;theme&#x27;).onchange=()=&gt;{document.documentElement.style.colorScheme=el(&#x27;theme&#x27;).value;draw();};
 let playing=false,frame=0,last=0;
 function stopRotation(){playing=false;cancelAnimationFrame(frame);el(&#x27;play&#x27;).textContent=&#x27;Reproducir giro&#x27;;}
-function animate(t){if(!playing)return;if(!last)last=t;if(t-last&gt;=40){const next=Math.min(360,+el(&#x27;angle&#x27;).value+(t-last)*.045);el(&#x27;angle&#x27;).value=String(Math.round(next));last=t;draw(true);if(next&gt;=360){stopRotation();return;}}frame=requestAnimationFrame(animate);}
+function animate(t){if(!playing)return;if(!last)last=t;if(t-last&gt;=40){const next=Math.min(360,+el(&#x27;angle&#x27;).value+(t-last)*.025);el(&#x27;angle&#x27;).value=String(Math.round(next));last=t;draw(true);if(next&gt;=360){stopRotation();return;}}frame=requestAnimationFrame(animate);}
 el(&#x27;play&#x27;).onclick=()=&gt;{if(playing){stopRotation();return;}if(+el(&#x27;angle&#x27;).value&gt;=360)el(&#x27;angle&#x27;).value=&#x27;0&#x27;;playing=true;last=0;el(&#x27;play&#x27;).textContent=&#x27;Pausar giro&#x27;;frame=requestAnimationFrame(animate);};
 el(&#x27;reset&#x27;).onclick=()=&gt;{stopRotation();el(&#x27;angle&#x27;).value=&#x27;0&#x27;;draw();};
-el(&#x27;angle&#x27;).oninput=()=&gt;{stopRotation();draw(true);};
+el(&#x27;angle&#x27;).oninput=()=&gt;{stopRotation();draw(true);};const stages=document.createElement(&#x27;div&#x27;);stages.className=&#x27;rotation-stages&#x27;;stages.setAttribute(&#x27;aria-label&#x27;,&#x27;Etapas del giro&#x27;);for(const [value,name] of [[0,&#x27;Región&#x27;],[90,&#x27;¼ de giro&#x27;],[180,&#x27;½ giro&#x27;],[360,&#x27;Sólido completo&#x27;]]){const b=document.createElement(&#x27;button&#x27;);b.className=&#x27;btn&#x27;;b.type=&#x27;button&#x27;;b.textContent=name;b.onclick=()=&gt;{stopRotation();el(&#x27;angle&#x27;).value=String(value);draw();};stages.append(b);}el(&#x27;angle&#x27;).parentElement.after(stages);
 document.addEventListener(&#x27;visibilitychange&#x27;,()=&gt;{if(document.hidden)stopRotation();});
 root.addEventListener(&#x27;keydown&#x27; ,e=&gt;{if(e.key===&#x27;Enter&#x27;)update();});new ResizeObserver(()=&gt;draw()).observe(el(&#x27;solid&#x27;));update();
 })();
