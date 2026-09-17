@@ -1164,6 +1164,15 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 #revolucion #raxislabel{font-size:16px!important}
 #revolucion .piece-row .form-label{display:flex;flex-direction:column;gap:6px}
 @media(max-width:500px){#revolucion .axis-column&gt;.viz-row{grid-template-columns:minmax(0,1fr)}#revolucion #rgo{justify-self:stretch}}
+&lt;/style&gt;&lt;style&gt;
+#revolucion .form-label,#revolucion .form-control,#revolucion .form-select,#revolucion .region-options,#revolucion #rmethods button,#revolucion #rdirections button{font-family:KaTeX_Main,Georgia,serif!important}
+#revolucion .form-label{font-size:16px!important}
+#revolucion .field-caption{display:block;margin-bottom:6px}
+#revolucion .field-caption .katex{font-size:1em}
+#revolucion .axis-column&gt;.viz-row{grid-template-columns:minmax(0,1fr) 150px;align-items:end}
+#revolucion #rgo{grid-column:1/-1;justify-self:end;width:auto;min-width:128px;border-radius:999px!important;padding:10px 26px!important;margin-top:8px;font-size:16px}
+#revolucion .piece-row .form-control{min-height:44px!important}
+@media(max-width:550px){#revolucion .axis-column&gt;.viz-row{grid-template-columns:minmax(0,1fr) 100px}}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
@@ -1486,7 +1495,15 @@ document.documentElement.style.colorScheme=&#x27;dark&#x27;;
 for(const id of [&#x27;a&#x27;,&#x27;b&#x27;]){const input=el(id),wrap=document.createElement(&#x27;span&#x27;),overlay=document.createElement(&#x27;span&#x27;);wrap.className=&#x27;math-entry&#x27;;overlay.className=&#x27;entry-overlay&#x27;;input.before(wrap);wrap.append(input,overlay);const refresh=()=&gt;{try{tex(overlay,math.parse(normalize(input.value)).toTex());}catch{overlay.textContent=input.value;}};input.addEventListener(&#x27;input&#x27;,refresh);input.addEventListener(&#x27;blur&#x27;,refresh);refresh();}
 
 function formatMathFields(){for(const input of root.querySelectorAll(&#x27;input.form-control&#x27;)){if(input.type===&#x27;number&#x27;||input.closest(&#x27;.math-entry&#x27;))continue;const wrap=document.createElement(&#x27;span&#x27;);wrap.className=&#x27;math-entry&#x27;;input.before(wrap);wrap.append(input);const display=document.createElement(&#x27;span&#x27;);display.className=&#x27;math-entry-display&#x27;;display.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);wrap.append(display);const refresh=()=&gt;{try{tex(display,math.parse(normalize(input.value)).toTex());}catch{display.textContent=input.value;}};input.addEventListener(&#x27;input&#x27;,refresh);input.addEventListener(&#x27;change&#x27;,refresh);input.addEventListener(&#x27;blur&#x27;,refresh);refresh();}}
-function refreshMathFields(){formatMathFields();for(const wrap of root.querySelectorAll(&#x27;.math-entry&#x27;)){const input=wrap.querySelector(&#x27;input&#x27;),display=wrap.querySelector(&#x27;.math-entry-display,.entry-overlay&#x27;);if(!input||!display)continue;try{tex(display,math.parse(normalize(input.value)).toTex());}catch{display.textContent=input.value;}}}
+function uniformFieldLabels(){
+ for(const label of root.querySelectorAll(&#x27;.form-label&#x27;)){
+  for(const node of [...label.childNodes])if(node.nodeType===3&amp;&amp;node.textContent.trim()){
+   const span=document.createElement(&#x27;span&#x27;);span.className=&#x27;field-caption&#x27;;const text=node.textContent.trim();node.replaceWith(span);tex(span,&#x27;\\text{&#x27;+text+&#x27;}&#x27;);
+  }
+ }
+ for(const row of el(&#x27;pieces&#x27;).children)for(const key of [&#x27;f&#x27;,&#x27;g&#x27;]){const input=row.querySelector(&#x27;[data-field=&quot;&#x27;+key+&#x27;&quot;]&#x27;);if(input){const caption=input.closest(&#x27;label&#x27;).querySelector(&#x27;.field-caption&#x27;);if(caption)tex(caption,&#x27;\\text{Función }&#x27;+key+&#x27;(&#x27;+variable()+&#x27;)&#x27;);}}
+}
+function refreshMathFields(){uniformFieldLabels();formatMathFields();for(const wrap of root.querySelectorAll(&#x27;.math-entry&#x27;)){const input=wrap.querySelector(&#x27;input&#x27;),display=wrap.querySelector(&#x27;.math-entry-display,.entry-overlay&#x27;);if(!input||!display)continue;try{tex(display,math.parse(normalize(input.value)).toTex());}catch{display.textContent=input.value;}}}
 formatMathFields();
 el(&#x27;cutview&#x27;).oninput=()=&gt;draw();
 el(&#x27;theme&#x27;).onchange=()=&gt;{document.documentElement.style.colorScheme=el(&#x27;theme&#x27;).value;draw();};
