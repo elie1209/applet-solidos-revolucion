@@ -1233,6 +1233,29 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 #revolucion #rvalues .symbolic-expression{min-width:0;margin:0;padding:5px 0;font-size:17px}
 #revolucion #rvalues .symbolic-name{line-height:1.4}
 @media(max-width:600px){#revolucion .r-bottom{grid-template-columns:1fr}#revolucion #rvalues .symbolic-row{grid-template-columns:100px minmax(0,1fr);gap:10px}}
+&lt;/style&gt;&lt;style&gt;
+:root{--background:light-dark(#f3f4f6,#10151d);--foreground:light-dark(#263342,#e1e7ef);--card:light-dark(#ffffff,#19212d);--card-foreground:var(--foreground);--muted:light-dark(#e9edf2,#222e3c);--muted-foreground:light-dark(#647184,#9aa9bc);--border:light-dark(#d8dfe7,#303d4e);--input:var(--border);--primary:light-dark(#355e88,#8babcf);--primary-foreground:light-dark(#ffffff,#101b29);--accent:light-dark(#e4ebf3,#263547);--accent-foreground:var(--foreground);--ring:#8babcf;--viz-series-1:light-dark(#b47a43,#bd8753);--viz-series-2:light-dark(#3e72a5,#80a9d1);--viz-series-4:light-dark(#6c492c,#f0e4d4)}
+#revolucion{font-family:Inter,Segoe UI,Arial,sans-serif!important;line-height:1.5}
+#revolucion h1{color:var(--foreground);font-weight:650;letter-spacing:-.035em}
+#revolucion h2,#revolucion h3{font-weight:600;letter-spacing:-.018em}
+#revolucion&gt;.text-small{font-size:10px;letter-spacing:.14em;color:var(--muted-foreground)}
+#revolucion .app-header p{color:var(--muted-foreground);font-size:13px}
+#revolucion .setup-grid&gt;section,#revolucion .method-axis-grid&gt;section,#revolucion .r-views&gt;section,#revolucion .r-bottom&gt;section,#revolucion .card,#revolucion .piece-row{border-radius:10px!important;border-color:var(--border);box-shadow:none}
+#revolucion .r-guide-step&gt;span{background:var(--muted);color:var(--muted-foreground);border:1px solid var(--border);border-radius:7px;font-size:12px;width:26px;height:26px;flex-basis:26px}
+#revolucion .form-control,#revolucion .form-select,#revolucion .math-entry{border-radius:7px!important}
+#revolucion button,#revolucion select,#revolucion summary{transition:background-color .15s,border-color .15s}
+#revolucion button:focus-visible,#revolucion input:focus-visible,#revolucion select:focus-visible,#revolucion summary:focus-visible{outline:2px solid var(--ring);outline-offset:3px}
+#revolucion #rmethods,#revolucion .segmented{border-radius:7px;background:var(--background);padding:3px;gap:3px}
+#revolucion #rmethods button,#revolucion .segmented button{border-radius:5px;background:transparent}
+#revolucion #rmethods button.selected,#revolucion .segmented button.selected{background:var(--accent);color:var(--foreground);box-shadow:inset 0 0 0 1px var(--border)}
+#revolucion #rgo{background:var(--primary);color:var(--primary-foreground);font-weight:600;padding-left:26px;padding-right:26px}
+#revolucion #rplay{background:var(--accent);color:var(--foreground);border:1px solid var(--border);border-radius:7px;padding:7px 12px}
+#revolucion input[type=range]{accent-color:var(--primary)}
+#revolucion input[type=range]::-webkit-slider-runnable-track{background:var(--border)!important;height:4px}
+#revolucion input[type=range]::-webkit-slider-thumb{background:var(--primary)!important;box-shadow:none!important;border:2px solid var(--card)!important}
+#revolucion .symbolic-name{color:var(--muted-foreground);opacity:1}
+#revolucion #rviewcontrol&gt;p{color:var(--muted-foreground);font-size:12px}
+#revolucion .r-bottom,#revolucion .r-views{column-gap:16px!important}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
@@ -1287,14 +1310,17 @@ function setMethod(value){stopRotation();method=value;syncAxis();update();if(val
 function methodUI(){el(&#x27;viewcontrol&#x27;).hidden=isShell();const cut=el(&#x27;cut&#x27;).closest(&#x27;section&#x27;);if(cut){cut.querySelector(&#x27;h3&#x27;).textContent=isShell()?&#x27;Capa separada del sólido&#x27;:&#x27;Disco o arandela en 3D&#x27;;cut.querySelector(&#x27;.text-small&#x27;).textContent=isShell()?&#x27;La capa es un tubo delgado: ρ indica el radio, h la altura y Δ el espesor radial.&#x27;:&#x27;El corte se muestra en perspectiva: R mide el radio exterior, r el hueco y Δ el espesor entre sus caras.&#x27;;}for(const button of el(&#x27;methods&#x27;).querySelectorAll(&#x27;button&#x27;)){const selected=button.dataset.method===method;button.setAttribute(&#x27;aria-pressed&#x27;,String(selected));button.classList.toggle(&#x27;selected&#x27;,selected);}el(&#x27;methodhelp&#x27;).textContent=isShell()?&#x27;Capas: los cortes son paralelos al eje. El radio es la distancia a la recta de giro; la altura es la distancia entre las funciones. Usa un intervalo a un solo lado del eje para no contar volumen dos veces.&#x27;:method===&#x27;disks&#x27;?&#x27;Discos: cada corte llega hasta el eje de giro y no tiene hueco.&#x27;:&#x27;Arandelas: cada corte tiene radio exterior e interior. Si el interior es cero, ese corte es un disco.&#x27;;}
 function integrandAt(seg,x,c){if(isShell())return 2*Math.PI*Math.abs(x-c)*Math.abs(seg.f(x)-seg.g(x));const q=seg.radii(x);return Math.PI*(q.R*q.R-q.r*q.r);}
 function shellView(s,C,selected,only=false){
- const {ctx,w,h}=setup(only?&#x27;cut&#x27;:&#x27;solid&#x27;),dark=!only,fg=dark?&#x27;#e7f5fa&#x27;:C.fg,orange=&#x27;#e88a19&#x27;,cyan=&#x27;#2dd4bf&#x27;;
+ const {ctx,w,h}=setup(only?&#x27;cut&#x27;:&#x27;solid&#x27;),dark=!only,fg=dark?&#x27;#e7f5fa&#x27;:C.fg,orange=&#x27;#bd8753&#x27;,cyan=&#x27;#6093c5&#x27;;
  if(dark){ctx.fillStyle=&#x27;#080f1b&#x27;;ctx.fillRect(0,0,w,h);}
- const yaw=(only?-32:+el(&#x27;yaw&#x27;).value)*Math.PI/180,pitch=(only?25:+el(&#x27;pitch&#x27;).value)*Math.PI/180,sweep=(only?360:+el(&#x27;angle&#x27;).value)*Math.PI/180;
+ const yaw=(only?-32:+el(&#x27;yaw&#x27;).value)*Math.PI/180,pitch=(only?38:Math.max(28,+el(&#x27;pitch&#x27;).value))*Math.PI/180,sweep=(only?360:+el(&#x27;angle&#x27;).value)*Math.PI/180;
  const low=p=&gt;Math.min(p.segment.f(p.x),p.segment.g(p.x)),high=p=&gt;Math.max(p.segment.f(p.x),p.segment.g(p.x));
  const values=s.segments.flatMap(seg=&gt;Array.from({length:81},(_,i)=&gt;{const x=seg.a+(seg.b-seg.a)*i/80;return[seg.f(x),seg.g(x)];}).flat());
  const lo=only?low(selected):Math.min(0,...values),hi=only?high(selected):Math.max(0,...values),radius=only?Math.max(Math.abs(selected.left-s.c),Math.abs(selected.right-s.c),.01):Math.max(Math.abs(s.a-s.c),Math.abs(s.b-s.c),.01),center=(hi+lo)/2;
- const scale=Math.min((w-90)/(2*radius+(!axisVertical()?hi-lo:0)),(h-115)/(axisVertical()?Math.max(.1,hi-lo)*Math.abs(Math.cos(pitch))+2*radius*Math.abs(Math.sin(pitch)):2*radius+Math.abs(hi-lo)*.3))*.88;
- function project(rad,a,ax){let x=rad*Math.cos(a),y=ax-center,z=rad*Math.sin(a);if(!axisVertical())[x,y]=[y,x];const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return[w/2+u*scale,(h-45)/2+15-(y*Math.cos(pitch)-v*Math.sin(pitch))*scale,y*Math.sin(pitch)+v*Math.cos(pitch)];}
+ function raw(rad,a,ax){let x=rad*Math.cos(a),y=ax-center,z=rad*Math.sin(a);if(!axisVertical())[x,y]=[y,x];const u=x*Math.cos(yaw)+z*Math.sin(yaw),v=-x*Math.sin(yaw)+z*Math.cos(yaw);return[u,-(y*Math.cos(pitch)-v*Math.sin(pitch)),y*Math.sin(pitch)+v*Math.cos(pitch)];}
+ const bounds=[];for(const z of [lo,hi])for(let i=0;i&lt;72;i++)bounds.push(raw(radius,i*Math.PI/36,z));
+ const minX=Math.min(...bounds.map(p=&gt;p[0])),maxX=Math.max(...bounds.map(p=&gt;p[0])),minY=Math.min(...bounds.map(p=&gt;p[1])),maxY=Math.max(...bounds.map(p=&gt;p[1]));
+ const scale=Math.min((w-130)/Math.max(.01,maxX-minX),(h-125)/Math.max(.01,maxY-minY))*.92;
+ function project(rad,a,ax){const p=raw(rad,a,ax);return[w/2+(p[0]-(minX+maxX)/2)*scale,h/2+(p[1]-(minY+maxY)/2)*scale,p[2]];}
  function line(points,color=fg,width=1.5,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
  function arrow(a,b,color=fg){line([a,b],color,2);const t=Math.atan2(b[1]-a[1],b[0]-a[0]);line([[b[0]-7*Math.cos(t-.4),b[1]-7*Math.sin(t-.4)],b,[b[0]-7*Math.cos(t+.4),b[1]-7*Math.sin(t+.4)]],color,2);}
  function label(text,x,y,color=fg){ctx.fillStyle=color;ctx.fillText(text,x,y);}
@@ -1313,30 +1339,29 @@ function shellView(s,C,selected,only=false){
   const v=[[x0,a],[x1,a],[x1,b],[x0,b]].map(([x,t])=&gt;project(Math.abs(x-s.c),t,seg[key](x)));faces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,color:orange,alpha:.22});
  }}
  if(!only&amp;&amp;!el(&#x27;stack&#x27;).checked)for(const seg of s.segments)for(const x of [seg.a,seg.b])for(let j=0;j&lt;48;j++){const phase=x&lt;s.c?Math.PI:0,a=phase+j*sweep/48,b=phase+(j+1)*sweep/48,r=Math.abs(x-s.c),v=[[r,a,seg.f(x)],[r,b,seg.f(x)],[r,b,seg.g(x)],[r,a,seg.g(x)]].map(p=&gt;project(...p));faces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,color:orange,alpha:.12});}
- layer(selected,cyan,only?.88:.80);
+ layer(selected,cyan,only?1:.95);
  faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;{ctx.beginPath();f.v.forEach((p,i)=&gt;i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=f.color;ctx.globalAlpha=f.alpha;ctx.fill();});ctx.globalAlpha=1;
  const phase=selected.x&lt;s.c?Math.PI:0,r0=Math.min(Math.abs(selected.left-s.c),Math.abs(selected.right-s.c)),r1=Math.max(Math.abs(selected.left-s.c),Math.abs(selected.right-s.c));
- for(const r of [r0,r1])for(const z of [low(selected),high(selected)])line(Array.from({length:81},(_,i)=&gt;project(r,phase+i*sweep/80,z)),only?fg:cyan,1.5);
+ for(const r of [r0,r1])for(const z of [low(selected),high(selected)])line(Array.from({length:81},(_,i)=&gt;project(r,phase+i*sweep/80,z)),&#x27;#e7eff8&#x27;,1.6);
  for(let j=0;j&lt;=12;j++){const a=phase+j*sweep/12;line([project(r1,a,low(selected)),project(r1,a,high(selected))],cyan,.6);}
- const coord=(x,y)=&gt;project(Math.abs(x-s.c),x&lt;s.c?Math.PI:0,y);
- if(!only){for(const [key,color] of [[&#x27;f&#x27;,&#x27;#ffffff&#x27;],[&#x27;g&#x27;,orange]])for(const seg of s.segments)line(Array.from({length:101},(_,i)=&gt;{const x=seg.a+(seg.b-seg.a)*i/100;return coord(x,seg[key](x));}),color,2);
-  arrow(coord(s.c-radius*1.15,0),coord(s.c+radius*1.2,0),&#x27;#a1dfea&#x27;);label(axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;,...coord(s.c+radius*1.2,0));
-  for(const x of integerTicks(s.a,s.b,5)){const p=coord(x,0);line([[p[0],p[1]-3],[p[0],p[1]+3]]);label(fmt(x),p[0]-4,p[1]+19);}
- }
- const aBase=project(0,0,lo-radius*.12),aTop=project(0,0,hi+radius*.2);line([aBase,aTop],&#x27;#9edce8&#x27;,1.5,[5,4]);arrow(project(0,0,hi),aTop,&#x27;#9edce8&#x27;);
- label(&#x27;Eje: &#x27;+(axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),12,23,&#x27;#9edce8&#x27;);
- const rho=Math.abs(selected.x-s.c),L=low(selected),H=high(selected),front=phase+sweep;
+ const coord=(x,y)=&gt;project(Math.abs(x-s.c),x&lt;s.c?Math.PI:0,y),palette=diagramPalette(C);
+ if(!only){for(const [key,color] of [[&#x27;f&#x27;,&#x27;#ffffff&#x27;],[&#x27;g&#x27;,orange]])for(const seg of s.segments)line(Array.from({length:101},(_,i)=&gt;{const x=seg.a+(seg.b-seg.a)*i/100;return coord(x,seg[key](x));}),color,2);}
+ const aBase=project(0,0,lo),aTop=project(0,0,hi),axisVector=[aTop[0]-aBase[0],aTop[1]-aBase[1]],axisLength=Math.hypot(...axisVector)||1;
+ const top=[aTop[0]+axisVector[0]/axisLength*24,aTop[1]+axisVector[1]/axisLength*24];
+ line([aBase,aTop],palette.axis,1.5,[5,4]);arrow(aTop,top,palette.axis);
+ label(&#x27;Eje de revolución: &#x27;+(axisVertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),16,24,palette.axis);
+ const rho=Math.abs(selected.x-s.c),L=low(selected),H=high(selected),front=phase+Math.PI*.35;
  const p0=project(0,front,L),p1=project(rho,front,L),p2=project(rho,front,H);
- arrow(p0,p1,fg);line([p1,p2],fg,3);label(&#x27;ρ&#x27;,(p0[0]+p1[0])/2+5,(p0[1]+p1[1])/2-8);label(&#x27;h&#x27;,p2[0]+10,(p1[1]+p2[1])/2);
- // The bright segment is the generating strip at the current rotation angle.
- if(!only)line([project(r1,front,L),project(r1,front,H)],&#x27;#ffffff&#x27;,3);
- const v=variable();label(&#x27;$\\rho(&#x27;+v+&#x27;)=|&#x27;+v+&#x27;-(&#x27;+s.c+&#x27;)|&#x27;,12,h-43);
- const ft=math.parse(normalize(selected.segment.fs)).toTex().replace(/\bx\b/g,v),gt=math.parse(normalize(selected.segment.gs)).toTex().replace(/\bx\b/g,v);
- label(&#x27;$h(&#x27;+v+&#x27;)=|(&#x27;+ft+&#x27;)-(&#x27;+gt+&#x27;)|&#x27;,12,h-20);
- if(only){const a=project(r0,phase+Math.PI/2,H),b=project(r1,phase+Math.PI/2,H);line([a,b],fg,3);label(&#x27;$\\Delta &#x27;+v,Math.min(w-65,b[0]+10),Math.max(45,b[1]-12));}
+ arrow(p0,p1,palette.outer);line([p1,p2],palette.inner,3);
+ const v=variable(),leftY=h-43,rightY=h-20;
+ line([p1,[30,leftY-10]],palette.outer,1,[3,4]);label(&#x27;$\\rho(&#x27;+v+&#x27;)&#x27;,16,leftY,palette.outer);
+ line([p2,[w-75,rightY-10]],palette.inner,1,[3,4]);label(&#x27;$h(&#x27;+v+&#x27;)&#x27;,w-72,rightY,palette.inner);
+ if(!only)line([project(r1,phase+sweep,L),project(r1,phase+sweep,H)],&#x27;#ffffff&#x27;,3);
+ if(only){const a=project(r0,phase+Math.PI/2,H),b=project(r1,phase+Math.PI/2,H);line([a,b],fg,3);line([b,[w-82,48]],fg,1,[3,4]);label(&#x27;$\\Delta &#x27;+v,w-75,47);}
+
 }
 
-function diagramPalette(C){const channels=(C.bg.match(/[\d.]+/g)||[]).slice(0,3).map(Number),light=channels.reduce((a,b)=&gt;a+b,0)&gt;400;return{axis:light?&#x27;#a84c00&#x27;:&#x27;#ff9831&#x27;,outer:light?&#x27;#915000&#x27;:&#x27;#ffd166&#x27;,inner:light?&#x27;#7531b9&#x27;:&#x27;#d7a0ff&#x27;};}
+function diagramPalette(C){const channels=(C.bg.match(/[\d.]+/g)||[]).slice(0,3).map(Number),light=channels.reduce((a,b)=&gt;a+b,0)&gt;400;return{axis:light?&#x27;#a84c00&#x27;:&#x27;#d5a46c&#x27;,outer:light?&#x27;#915000&#x27;:&#x27;#f0cf95&#x27;,inner:light?&#x27;#7531b9&#x27;:&#x27;#c1b6e3&#x27;};}
 function radiusExpressions(seg,c,v){
  const latex=expr=&gt;{try{return math.simplify(normalize(expr)).toTex().replace(/\bx\b/g,v);}catch{return math.parse(normalize(expr)).toTex().replace(/\bx\b/g,v);}};
  const fs=&#x27;(&#x27;+seg.fs+&#x27;)-(&#x27;+c+&#x27;)&#x27;,gs=&#x27;(&#x27;+seg.gs+&#x27;)-(&#x27;+c+&#x27;)&#x27;,samples=Array.from({length:301},(_,i)=&gt;seg.a+(seg.b-seg.a)*i/300);
@@ -1451,7 +1476,7 @@ function draw(animationOnly=false){if(!animationOnly)refreshMathFields();if(!sta
  }
  if(!animationOnly)for(const label of Array.from(el(&#x27;profile&#x27;).querySelectorAll(&#x27;text&#x27;))){const box=label.getBBox(),fo=document.createElementNS(&#x27;http://www.w3.org/2000/svg&#x27;,&#x27;foreignObject&#x27;);fo.setAttribute(&#x27;x&#x27;,box.x-6);fo.setAttribute(&#x27;y&#x27;,box.y-2);fo.setAttribute(&#x27;width&#x27;,Math.max(36,box.width+12));fo.setAttribute(&#x27;height&#x27;,26);const span=document.createElement(&#x27;div&#x27;);span.style.fontSize=&#x27;12px&#x27;;try{tex(span,/[=]/.test(label.textContent)?math.parse(normalize(label.textContent)).toTex():mathCaption(label.textContent));}catch{tex(span,mathCaption(label.textContent));}fo.append(span);label.replaceWith(fo);}
  if(isShell()){tex(el(&#x27;angleout&#x27;),el(&#x27;angle&#x27;).value+&#x27;^{\\circ}&#x27;);shellView(s,C,q);if(!animationOnly)shellResults(s,q,C);return;}
- const savedSolidColors={...C};Object.assign(C,{bg:&#x27;#080f1b&#x27;,fg:&#x27;#a1dfea&#x27;,line:&#x27;#254754&#x27;,outer:&#x27;#e88a19&#x27;,inner:&#x27;#2dd4bf&#x27;,curve:&#x27;#ffffff&#x27;});
+ const savedSolidColors={...C};Object.assign(C,{bg:&#x27;#080f1b&#x27;,fg:&#x27;#c4d0dc&#x27;,line:&#x27;#3a4756&#x27;,outer:&#x27;#bd8753&#x27;,inner:&#x27;#6093c5&#x27;,curve:&#x27;#ffffff&#x27;});
  const {ctx,w,h}=setup(&#x27;solid&#x27;),yaw=+el(&#x27;yaw&#x27;).value*Math.PI/180,pitch=+el(&#x27;pitch&#x27;).value*Math.PI/180;
  ctx.fillStyle=C.bg;ctx.fillRect(0,0,w,h);
  const xmin=Math.min(0,s.a),xmax=Math.max(0,s.b),ymin=Math.min(-s.max,-s.c),ymax=Math.max(s.max,-s.c),midX=(xmin+xmax)/2,midY=(ymin+ymax)/2;
@@ -1473,11 +1498,11 @@ function draw(animationOnly=false){if(!animationOnly)refreshMathFields();if(!sta
  faces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.pts,shade(f.selected?C.inner:f.color,f.shade||.85),null,f.alpha*(f.selected?.9:.48)));
 
  // Fine meridians and rings reveal the surface curvature.
- if(!stack&amp;&amp;sweep&gt;0){ctx.save();ctx.globalAlpha=.18;for(let j=0;j&lt;=10;j++){const x=s.a+span*j/10;circle(x,s.radii(x).R,&#x27;#ffac24&#x27;);}for(let k=0;k&lt;=18;k++){const angle=k*sweep/18;line3(Array.from({length:100},(_,j)=&gt;{const x=s.a+span*j/99,r=s.radii(x).R;return[x,r*Math.cos(angle),r*Math.sin(angle)];}),&#x27;#ffac24&#x27;,.65);}ctx.restore();}
+ if(!stack&amp;&amp;sweep&gt;0){ctx.save();ctx.globalAlpha=.18;for(let j=0;j&lt;=10;j++){const x=s.a+span*j/10;circle(x,s.radii(x).R,&#x27;#dcb88c&#x27;);}for(let k=0;k&lt;=18;k++){const angle=k*sweep/18;line3(Array.from({length:100},(_,j)=&gt;{const x=s.a+span*j/99,r=s.radii(x).R;return[x,r*Math.cos(angle),r*Math.sin(angle)];}),&#x27;#dcb88c&#x27;,.65);}ctx.restore();}
 
  function circle(x,r,col){const pts=Array.from({length:81},(_,k)=&gt;xyz(x,r*Math.cos(k*sweep/80),r*Math.sin(k*sweep/80)));ctx.beginPath();pts.forEach((p,i)=&gt;i?ctx.lineTo(...p.slice(0,2)):ctx.moveTo(...p.slice(0,2)));ctx.strokeStyle=col;ctx.lineWidth=col===C.inner?2.5:1;ctx.stroke();}
  if(stack&amp;&amp;sweep&gt;=Math.PI*2){ctx.save();ctx.globalAlpha=.45;s.parts.forEach(p=&gt;circle(p.left,p.R,C.fg));ctx.restore();}
- if(sweep&gt;0){const cutFaces=[];for(let j=0;j&lt;64;j++){const a=j*sweep/64,b=(j+1)*sweep/64;const add=(pts,factor)=&gt;{const v=pts.map(p=&gt;{if(!stack){const radius=Math.hypot(p[1],p[2]),rr=q.segment.radii(p[0]),target=Math.abs(radius-q.R)&lt;Math.abs(radius-q.r)?rr.R:rr.r;if(radius&gt;1e-12)return xyz(p[0],p[1]*target/radius,p[2]*target/radius);}return xyz(...p);});cutFaces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,factor});};for(const x of [q.left,q.right])add([[x,q.R*Math.cos(a),q.R*Math.sin(a)],[x,q.R*Math.cos(b),q.R*Math.sin(b)],[x,q.r*Math.cos(b),q.r*Math.sin(b)],[x,q.r*Math.cos(a),q.r*Math.sin(a)]],.95);for(const r of [q.R,q.r])if(r)add([[q.left,r*Math.cos(a),r*Math.sin(a)],[q.right,r*Math.cos(a),r*Math.sin(a)],[q.right,r*Math.cos(b),r*Math.sin(b)],[q.left,r*Math.cos(b),r*Math.sin(b)]],.7+.15*Math.cos(a));}cutFaces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.v,shade(C.inner,f.factor),null,.86));for(const x of [q.left,q.right]){const edge=stack?q:q.segment.radii(x);circle(x,edge.R,&#x27;#e7f5fa&#x27;);if(edge.r)circle(x,edge.r,&#x27;#e7f5fa&#x27;);}}
+ if(sweep&gt;0){const cutFaces=[];for(let j=0;j&lt;64;j++){const a=j*sweep/64,b=(j+1)*sweep/64;const add=(pts,factor)=&gt;{const v=pts.map(p=&gt;{if(!stack){const radius=Math.hypot(p[1],p[2]),rr=q.segment.radii(p[0]),target=Math.abs(radius-q.R)&lt;Math.abs(radius-q.r)?rr.R:rr.r;if(radius&gt;1e-12)return xyz(p[0],p[1]*target/radius,p[2]*target/radius);}return xyz(...p);});cutFaces.push({v,z:v.reduce((t,p)=&gt;t+p[2],0)/4,factor});};for(const x of [q.left,q.right])add([[x,q.R*Math.cos(a),q.R*Math.sin(a)],[x,q.R*Math.cos(b),q.R*Math.sin(b)],[x,q.r*Math.cos(b),q.r*Math.sin(b)],[x,q.r*Math.cos(a),q.r*Math.sin(a)]],.95);for(const r of [q.R,q.r])if(r)add([[q.left,r*Math.cos(a),r*Math.sin(a)],[q.right,r*Math.cos(a),r*Math.sin(a)],[q.right,r*Math.cos(b),r*Math.sin(b)],[q.left,r*Math.cos(b),r*Math.sin(b)]],.7+.15*Math.cos(a));}cutFaces.sort((a,b)=&gt;a.z-b.z).forEach(f=&gt;path(f.v,shade(C.inner,f.factor),null,.97));for(const x of [q.left,q.right]){const edge=stack?q:q.segment.radii(x);circle(x,edge.R,&#x27;#e7f5fa&#x27;);if(edge.r)circle(x,edge.r,&#x27;#e7f5fa&#x27;);}}
  function line3(points,color,width=1,dash=[]){ctx.beginPath();points.forEach((p,i)=&gt;{const v=xyz(...p);i?ctx.lineTo(v[0],v[1]):ctx.moveTo(v[0],v[1]);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);}
  function axisArrow(point,previous){const p=xyz(...point),q=xyz(...previous),a=Math.atan2(p[1]-q[1],p[0]-q[0]);ctx.fillStyle=C.fg;ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(p[0]-13*Math.cos(a-.35),p[1]-13*Math.sin(a-.35));ctx.lineTo(p[0]-13*Math.cos(a+.35),p[1]-13*Math.sin(a+.35));ctx.closePath();ctx.fill();}
  const labels=[];
@@ -1518,9 +1543,9 @@ function draw(animationOnly=false){if(!animationOnly)refreshMathFields();if(!sta
  function stroke(points,color=C.fg,width=1.4,dashed=false){cc.beginPath();points.forEach((p,i)=&gt;i?cc.lineTo(...p):cc.moveTo(...p));cc.strokeStyle=color;cc.lineWidth=width;cc.setLineDash(dashed?[4,4]:[]);cc.stroke();cc.setLineDash([]);}
  function arrow(a,b,color,width=1.6){stroke([a,b],color,width);const t=Math.atan2(b[1]-a[1],b[0]-a[0]);stroke([[b[0]-7*Math.cos(t-.4),b[1]-7*Math.sin(t-.4)],b,[b[0]-7*Math.cos(t+.4),b[1]-7*Math.sin(t+.4)]],color,width);}
  function ellipse(radius,back=false){cc.beginPath();cc.ellipse(cx-(back?depth:0),cy,radius*flat,radius,0,0,Math.PI*2);}
- if(is3d){for(let j=0;j&lt;72;j++){const t=j*Math.PI*2/72,u=(j+1)*Math.PI*2/72;for(const radius of [R,r]){if(!radius)continue;const pts=[[cx-depth+radius*flat*Math.cos(t),cy+radius*Math.sin(t)],[cx-depth+radius*flat*Math.cos(u),cy+radius*Math.sin(u)],[cx+radius*flat*Math.cos(u),cy+radius*Math.sin(u)],[cx+radius*flat*Math.cos(t),cy+radius*Math.sin(t)]];cc.beginPath();pts.forEach((p,i)=&gt;i?cc.lineTo(...p):cc.moveTo(...p));cc.closePath();cc.fillStyle=d3.color(&#x27;#2dd4bf&#x27;).darker(.4+.4*Math.sin(t)).formatRgb();cc.fill();}}ellipse(R,true);cc.strokeStyle=C.fg;cc.lineWidth=1;cc.stroke();}
- cc.beginPath();cc.ellipse(cx,cy,R*flat,R,0,0,Math.PI*2);if(r){cc.moveTo(cx+r*flat,cy);cc.ellipse(cx,cy,r*flat,r,0,0,Math.PI*2,true);}cc.fillStyle=&#x27;#2dd4bf&#x27;;cc.fill(&#x27;evenodd&#x27;);cc.strokeStyle=C.fg;cc.lineWidth=1.8;cc.stroke();
- cc.save();cc.clip(&#x27;evenodd&#x27;);cc.globalAlpha=.2;for(let k=-5;k&lt;=5;k++){const z=k*R/5;stroke([[cx-R*flat,cy+z],[cx+R*flat,cy+z]],&#x27;#e8fff8&#x27;,.6);stroke([[cx+z*flat,cy-R],[cx+z*flat,cy+R]],&#x27;#e8fff8&#x27;,.6);}cc.restore();
+ if(is3d){for(let j=0;j&lt;72;j++){const t=j*Math.PI*2/72,u=(j+1)*Math.PI*2/72;for(const radius of [R,r]){if(!radius)continue;const pts=[[cx-depth+radius*flat*Math.cos(t),cy+radius*Math.sin(t)],[cx-depth+radius*flat*Math.cos(u),cy+radius*Math.sin(u)],[cx+radius*flat*Math.cos(u),cy+radius*Math.sin(u)],[cx+radius*flat*Math.cos(t),cy+radius*Math.sin(t)]];cc.beginPath();pts.forEach((p,i)=&gt;i?cc.lineTo(...p):cc.moveTo(...p));cc.closePath();cc.fillStyle=d3.color(&#x27;#6093c5&#x27;).darker(.4+.4*Math.sin(t)).formatRgb();cc.fill();}}ellipse(R,true);cc.strokeStyle=C.fg;cc.lineWidth=1;cc.stroke();}
+ cc.beginPath();cc.ellipse(cx,cy,R*flat,R,0,0,Math.PI*2);if(r){cc.moveTo(cx+r*flat,cy);cc.ellipse(cx,cy,r*flat,r,0,0,Math.PI*2,true);}cc.fillStyle=&#x27;#6093c5&#x27;;cc.fill(&#x27;evenodd&#x27;);cc.strokeStyle=C.fg;cc.lineWidth=1.8;cc.stroke();
+ cc.save();cc.clip(&#x27;evenodd&#x27;);cc.globalAlpha=.12;for(let k=-4;k&lt;=4;k++){const z=k*R/4;stroke([[cx-R*flat,cy+z],[cx+R*flat,cy+z]],&#x27;#e8fff8&#x27;,.6);stroke([[cx+z*flat,cy-R],[cx+z*flat,cy+R]],&#x27;#e8fff8&#x27;,.6);}cc.restore();
  // Every coordinate axis starts at the same local center of the section.
  const origin=[cx,cy],axisEnd=Math.min(cut.w-26,cx+R*flat+82);
  if(is3d){arrow(origin,[cx,48],C.fg);cc.fillStyle=C.fg;cc.fillText(vertical()?&#x27;x&#x27;:&#x27;y&#x27;,cx+10,46);stroke([origin,[cx-R*flat-40,cy+R*.55]],C.fg,1.4,true);arrow([cx-R*flat-25,cy+R*.43],[cx-R*flat-40,cy+R*.55],C.fg);cc.fillText(&#x27;z&#x27;,cx-R*flat-44,cy+R*.55+18);arrow(origin,[axisEnd,cy],palette.axis,2.5);cc.fillStyle=palette.axis;cc.fillText(variable(),axisEnd-4,cy-12);stroke([[20,cy],origin],palette.axis,1.5,true);}
