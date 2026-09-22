@@ -1226,6 +1226,13 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 #revolucion .symbolic-expression{overflow-x:auto;padding:3px 0 7px;font-size:17px}
 #revolucion .symbolic-expression .katex,#revolucion .canvas-math .katex{color:inherit!important}
 #revolucion .r-bottom{align-items:start!important}
+&lt;/style&gt;&lt;style&gt;
+#revolucion .r-bottom{align-items:stretch!important}
+#revolucion .r-bottom&gt;section{box-sizing:border-box}
+#revolucion #rvalues .symbolic-row{display:grid;grid-template-columns:115px minmax(0,1fr);align-items:center;gap:14px;margin:0;padding:16px 0}
+#revolucion #rvalues .symbolic-expression{min-width:0;margin:0;padding:5px 0;font-size:17px}
+#revolucion #rvalues .symbolic-name{line-height:1.4}
+@media(max-width:600px){#revolucion .r-bottom{grid-template-columns:1fr}#revolucion #rvalues .symbolic-row{grid-template-columns:100px minmax(0,1fr);gap:10px}}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
@@ -1515,9 +1522,9 @@ function draw(animationOnly=false){if(!animationOnly)refreshMathFields();if(!sta
  cc.beginPath();cc.ellipse(cx,cy,R*flat,R,0,0,Math.PI*2);if(r){cc.moveTo(cx+r*flat,cy);cc.ellipse(cx,cy,r*flat,r,0,0,Math.PI*2,true);}cc.fillStyle=&#x27;#2dd4bf&#x27;;cc.fill(&#x27;evenodd&#x27;);cc.strokeStyle=C.fg;cc.lineWidth=1.8;cc.stroke();
  cc.save();cc.clip(&#x27;evenodd&#x27;);cc.globalAlpha=.2;for(let k=-5;k&lt;=5;k++){const z=k*R/5;stroke([[cx-R*flat,cy+z],[cx+R*flat,cy+z]],&#x27;#e8fff8&#x27;,.6);stroke([[cx+z*flat,cy-R],[cx+z*flat,cy+R]],&#x27;#e8fff8&#x27;,.6);}cc.restore();
  // Every coordinate axis starts at the same local center of the section.
- const origin=[cx,cy];
- if(is3d){arrow(origin,[cx,48],C.fg);cc.fillStyle=C.fg;cc.fillText(vertical()?&#x27;x&#x27;:&#x27;y&#x27;,cx+10,46);stroke([origin,[cx-R*flat-40,cy+R*.55]],C.fg,1.4,true);arrow([cx-R*flat-25,cy+R*.43],[cx-R*flat-40,cy+R*.55],C.fg);cc.fillText(&#x27;z&#x27;,cx-R*flat-44,cy+R*.55+18);arrow(origin,[cut.w-26,cy],palette.axis,2.5);cc.fillStyle=palette.axis;cc.fillText(variable(),cut.w-30,cy-12);stroke([[20,cy],origin],palette.axis,1.5,true);}
- else{arrow(origin,[cx,48],C.fg);arrow(origin,[cut.w-28,cy],C.fg);cc.fillStyle=C.fg;cc.fillText(vertical()?&#x27;x&#x27;:&#x27;y&#x27;,cx+10,46);cc.fillText(&#x27;z&#x27;,cut.w-32,cy-12);cc.beginPath();cc.arc(cx,cy,5,0,Math.PI*2);cc.fillStyle=palette.axis;cc.fill();cc.beginPath();cc.arc(cx,cy,10,0,Math.PI*2);cc.strokeStyle=palette.axis;cc.stroke();}
+ const origin=[cx,cy],axisEnd=Math.min(cut.w-26,cx+R*flat+82);
+ if(is3d){arrow(origin,[cx,48],C.fg);cc.fillStyle=C.fg;cc.fillText(vertical()?&#x27;x&#x27;:&#x27;y&#x27;,cx+10,46);stroke([origin,[cx-R*flat-40,cy+R*.55]],C.fg,1.4,true);arrow([cx-R*flat-25,cy+R*.43],[cx-R*flat-40,cy+R*.55],C.fg);cc.fillText(&#x27;z&#x27;,cx-R*flat-44,cy+R*.55+18);arrow(origin,[axisEnd,cy],palette.axis,2.5);cc.fillStyle=palette.axis;cc.fillText(variable(),axisEnd-4,cy-12);stroke([[20,cy],origin],palette.axis,1.5,true);}
+ else{arrow(origin,[cx,48],C.fg);arrow(origin,[axisEnd,cy],C.fg);cc.fillStyle=C.fg;cc.fillText(vertical()?&#x27;x&#x27;:&#x27;y&#x27;,cx+10,46);cc.fillText(&#x27;z&#x27;,axisEnd-4,cy-12);cc.beginPath();cc.arc(cx,cy,5,0,Math.PI*2);cc.fillStyle=palette.axis;cc.fill();cc.beginPath();cc.arc(cx,cy,10,0,Math.PI*2);cc.strokeStyle=palette.axis;cc.stroke();}
  const v=variable(),e=radiusExpressions(q.segment,s.c,v),tx=Math.max(cx+R*flat+18,cut.w*.62);
  function guide(radius,angle,formula,y,color){const end=[cx+radius*flat*Math.cos(angle),cy-radius*Math.sin(angle)];arrow(origin,end,color,2.5);stroke([end,[tx-7,y-5]],color,1.2,true);cc.fillStyle=color;cc.font=&#x27;14px Georgia&#x27;;cc.fillText(&#x27;$&#x27;+formula,tx,y);}
  guide(R,Math.PI*.70,&#x27;R(&#x27;+v+&#x27;)=&#x27;+e.R,82,palette.outer);
