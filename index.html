@@ -1279,6 +1279,8 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 #revolucion .region-options{padding-left:16px}
 #revolucion .header-tools select,#revolucion .header-tools summary{font-family:inherit;font-size:13px}
 @media(max-width:750px){#revolucion .interval-column,#revolucion .riemann-card{border-left:0!important}#revolucion{padding:16px!important}}
+&lt;/style&gt;&lt;style&gt;
+#revolucion .form-label,#revolucion .form-check,#revolucion .form-select,#revolucion .region-options,#revolucion .btn,#revolucion button,#revolucion summary,#revolucion #rmethods button,#revolucion #rdirections button,#revolucion .segmented button{font-family:Segoe UI,Arial,sans-serif!important}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
@@ -1326,7 +1328,7 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 const root=document.getElementById(&#x27;revolucion&#x27;),el=id=&gt;root.querySelector(&#x27;#r&#x27;+id);let state;
 const fmt=x=&gt;Number(x).toLocaleString(&#x27;es&#x27;,{maximumSignificantDigits:6});
 const normalize=s=&gt;s.replace(/−/g,&#x27;-&#x27;).replace(/[×·]/g,&#x27;*&#x27;).replace(/÷/g,&#x27;/&#x27;).replace(/²/g,&#x27;^2&#x27;).replace(/³/g,&#x27;^3&#x27;).replace(/√/g,&#x27;sqrt&#x27;).replace(/sen\b/g,&#x27;sin&#x27;).replace(/π/g,&#x27;pi&#x27;).replace(/(\d),(\d)/g,&#x27;$1.$2&#x27;);
-const tex=(target,value)=&gt;{try{if(window.katex){target.innerHTML=katex.renderToString(value,{output:&#x27;htmlAndMathml&#x27;,throwOnError:false,strict:false,trust:false});return;}}catch{}target.textContent=value;};
+const tex=(target,value)=&gt;{if(target.matches(&#x27;.field-caption,#rflabel,#rglabel&#x27;)||(target.closest(&#x27;.form-label&#x27;)&amp;&amp;!target.matches(&#x27;.entry-overlay,.entry-math,.math-entry-display&#x27;)&amp;&amp;!target.closest(&#x27;.math-entry&#x27;))){target.textContent=value.replace(/\\text\{([^}]*)\}/g,&#x27;$1&#x27;);return;}try{if(window.katex){target.innerHTML=katex.renderToString(value,{output:&#x27;htmlAndMathml&#x27;,throwOnError:false,strict:false,trust:false});return;}}catch{}target.textContent=value;};
 let method=&#x27;washers&#x27;;
 const isShell=()=&gt;method===&#x27;shells&#x27;,axisVertical=()=&gt;el(&#x27;orientation&#x27;).value===&#x27;y&#x27;;
 function setMethod(value){stopRotation();method=value;syncAxis();update();if(value===&#x27;disks&#x27;&amp;&amp;method===&#x27;washers&#x27;)el(&#x27;methodhelp&#x27;).textContent=&#x27;Esta región deja un hueco: corresponde usar Arandelas. Para obtener discos, una frontera debe llegar a la recta de giro.&#x27;;}
@@ -1412,7 +1414,7 @@ function renderSymbolicPanel(s,C){
 function shellResults(s,q,C){shellView(s,C,q,true);renderSymbolicPanel(s,C);}
 function mathCaption(str){if(str.startsWith(&quot;$&quot;))return str.slice(1);if(str===&#x27;A = π(R² − r²)&#x27;)return &#x27;A=\\pi(R^2-r^2)&#x27;;str=str.replace(/·/g,&#x27;,&#x27;);const escaped=str.replace(/([{}%#$&amp;_])/g,&#x27;\\$1&#x27;);if(/^[\d.,+−\- xyzRrhρΔ°=]+$/.test(str))return str.replace(/ρ/g,&#x27;\\rho &#x27;).replace(/Δ/g,&#x27;\\Delta &#x27;).replace(/°/g,&#x27;^{\\circ}&#x27;).replace(/−/g,&#x27;-&#x27;);return &#x27;\\text{&#x27;+escaped+&#x27;}&#x27;;}
 
-function mathHints(){
+function mathHints(){return;
  const targets=[...root.querySelectorAll(&#x27;.r-help,.input-note,.solid-hint,.r-guide-step&gt;span&#x27;),el(&#x27;axislabel&#x27;)];
  for(const target of targets){const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())if(!walker.currentNode.parentElement.closest(&#x27;.katex,button&#x27;))nodes.push(walker.currentNode);
  for(const node of nodes){const regex=/(?:[xy]\s*=\s*[−-]?\d+(?:[.,]\d+)?|[fg]\([xy]\)\s*=?|√\([xy]\)|[xy][²³]|[0-9]+(?:[.,][0-9]+)?°?|\b[xyRr]\b)/g;let match,last=0,found=false;const frag=document.createDocumentFragment();while((match=regex.exec(node.textContent))){found=true;frag.append(document.createTextNode(node.textContent.slice(last,match.index)));const span=document.createElement(&#x27;span&#x27;);let value=match[0].replace(/−/g,&#x27;-&#x27;).replace(/°/g,&#x27;^{\\circ}&#x27;).replace(/²/g,&#x27;^2&#x27;).replace(/³/g,&#x27;^3&#x27;).replace(/√\(([xy])\)/g,&#x27;\\sqrt{$1}&#x27;);value=value.replace(&#x27;√(x)&#x27;,&#x27;\\sqrt{x}&#x27;).replace(&#x27;√(y)&#x27;,&#x27;\\sqrt{y}&#x27;);tex(span,value.replace(/\\\\/g,&#x27;\\&#x27;));frag.append(span);last=regex.lastIndex;}if(found){frag.append(document.createTextNode(node.textContent.slice(last)));node.replaceWith(frag);}}
