@@ -2089,7 +2089,12 @@ body{background:var(--background)!important}
 #revolucion .view-options-grid .riemann-card&gt;.viz-row{gap:8px!important}
 #revolucion .view-options-grid .riemann-card&gt;.viz-row&gt;.form-label{flex-basis:175px}
 @media(max-width:760px){#revolucion .view-options-grid{grid-template-columns:1fr;gap:18px}}
-&lt;/style&gt;&lt;script&gt;(()=&gt;{const box=document.querySelector(&#x27;.view-options&#x27;),grid=document.createElement(&#x27;div&#x27;),camera=document.createElement(&#x27;div&#x27;);grid.className=&#x27;view-options-grid&#x27;;camera.className=&#x27;view-camera&#x27;;const children=[...box.children].filter(n=&gt;n.tagName!==&#x27;SUMMARY&#x27;);grid.append(box.querySelector(&#x27;.riemann-card&#x27;),camera);for(const child of children)if(!child.classList.contains(&#x27;riemann-card&#x27;))camera.append(child);box.append(grid);})();&lt;/script&gt;&lt;/body&gt;
+&lt;/style&gt;&lt;script&gt;(()=&gt;{const box=document.querySelector(&#x27;.view-options&#x27;),grid=document.createElement(&#x27;div&#x27;),camera=document.createElement(&#x27;div&#x27;);grid.className=&#x27;view-options-grid&#x27;;camera.className=&#x27;view-camera&#x27;;const children=[...box.children].filter(n=&gt;n.tagName!==&#x27;SUMMARY&#x27;);grid.append(box.querySelector(&#x27;.riemann-card&#x27;),camera);for(const child of children)if(!child.classList.contains(&#x27;riemann-card&#x27;))camera.append(child);box.append(grid);})();&lt;/script&gt;&lt;style id=&quot;cut-controls-alignment&quot;&gt;
+#revolucion .view-camera{border-left:1px solid var(--border);padding-left:24px}
+#revolucion .view-options-grid .riemann-card label:has(.number-stepper){grid-template-columns:minmax(0,210px) auto;justify-content:start;gap:10px}
+@media(max-width:1100px){#revolucion .view-options-grid .riemann-card label:has(.number-stepper){grid-template-columns:minmax(0,175px) auto}}
+@media(max-width:760px){#revolucion .view-camera{border-left:0;border-top:1px solid var(--border);padding-left:0;padding-top:18px}}
+&lt;/style&gt;&lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
 </body>
