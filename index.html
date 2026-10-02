@@ -1549,6 +1549,7 @@ function draw(animationOnly=false){if(!animationOnly)refreshMathFields();if(!sta
  line3([[s.a,0,0],[s.b,0,0]],C.fg,1,[5,4]);
  const curve=fn=&gt;Array.from({length:201},(_,j)=&gt;{const x=s.a+(s.b-s.a)*j/200;return[x,fn(x)-s.c,0];});
  line3(curve(s.f),C.curve,2.3);line3(curve(s.g),C.inner,2,[6,3]);
+ for(const endpoint of [s.a,s.b])line3([[endpoint,s.f(endpoint)-s.c,0],[endpoint,s.g(endpoint)-s.c,0]],C.curve,1.8);
  line3([[q.x,0,0],[q.x,q.R,0]],&#x27;#ffffff&#x27;,1.5);if(q.r)line3([[q.x,0,0],[q.x,0,q.r]],&#x27;#ffffff&#x27;,1.5);
  ctx.fillStyle=C.fg;ctx.fillText(&#x27;Recta de giro: &#x27;+(vertical()?&#x27;x&#x27;:&#x27;y&#x27;)+&#x27; = &#x27;+fmt(s.c),14,22);
  ctx.strokeStyle=C.curve;ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(14,h-18);ctx.lineTo(38,h-18);ctx.stroke();ctx.fillText(&#x27;f(&#x27;+variable()+&#x27;)&#x27;,44,h-14);ctx.strokeStyle=C.inner;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(100,h-18);ctx.lineTo(124,h-18);ctx.stroke();ctx.setLineDash([]);ctx.fillText(&#x27;g(&#x27;+variable()+&#x27;)&#x27;,130,h-14);
