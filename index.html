@@ -2075,7 +2075,21 @@ body{background:var(--background)!important}
 #revolucion .header-tools summary,#revolucion .header-tools select{background:transparent!important;border-color:var(--border)!important}
 #revolucion .math-entry .katex{font-family:KaTeX_Main,serif}
 @media(max-width:620px){#revolucion{padding:14px!important}#revolucion .app-header h1{font-size:24px!important}}
-&lt;/style&gt;&lt;/body&gt;
+&lt;/style&gt;&lt;style&gt;
+#revolucion .r-guide-step&gt;span{display:inline-flex!important;align-items:center;justify-content:center;width:26px!important;height:26px!important;flex:0 0 26px!important;border-radius:50%!important;background:var(--accent)!important;border:1px solid var(--border)!important;color:var(--primary)!important;font-size:12px!important}
+#revolucion .view-options-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:6px 0 16px;align-items:start}
+#revolucion .view-options-grid .riemann-card{margin:0!important;padding:0!important}
+#revolucion .view-camera{min-width:0;padding-top:2px}
+#revolucion .view-camera&gt;.viz-controls{display:flex!important;flex-wrap:wrap;gap:10px!important;margin:0 0 12px!important}
+#revolucion .view-camera&gt;.viz-controls&gt;.form-label{flex:1 1 100%;margin:0!important}
+#revolucion .view-camera .rotation-stages{gap:6px}
+#revolucion .view-camera .rotation-stages button{font-size:12px;padding:7px 9px}
+#revolucion .view-options-grid .riemann-card label:has(.number-stepper){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+#revolucion .view-options-grid .riemann-card label:has(.number-stepper)&gt;.field-caption{min-width:0;font-size:13px}
+#revolucion .view-options-grid .riemann-card&gt;.viz-row{gap:8px!important}
+#revolucion .view-options-grid .riemann-card&gt;.viz-row&gt;.form-label{flex-basis:175px}
+@media(max-width:760px){#revolucion .view-options-grid{grid-template-columns:1fr;gap:18px}}
+&lt;/style&gt;&lt;script&gt;(()=&gt;{const box=document.querySelector(&#x27;.view-options&#x27;),grid=document.createElement(&#x27;div&#x27;),camera=document.createElement(&#x27;div&#x27;);grid.className=&#x27;view-options-grid&#x27;;camera.className=&#x27;view-camera&#x27;;const children=[...box.children].filter(n=&gt;n.tagName!==&#x27;SUMMARY&#x27;);grid.append(box.querySelector(&#x27;.riemann-card&#x27;),camera);for(const child of children)if(!child.classList.contains(&#x27;riemann-card&#x27;))camera.append(child);box.append(grid);})();&lt;/script&gt;&lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
 </body>
