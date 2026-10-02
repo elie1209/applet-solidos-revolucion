@@ -1234,7 +1234,7 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 #revolucion #rvalues .symbolic-name{line-height:1.4}
 @media(max-width:600px){#revolucion .r-bottom{grid-template-columns:1fr}#revolucion #rvalues .symbolic-row{grid-template-columns:100px minmax(0,1fr);gap:10px}}
 &lt;/style&gt;&lt;style&gt;
-:root{--background:light-dark(#f3f4f6,#121421);--foreground:light-dark(#292b40,#e8e9f2);--card:light-dark(#ffffff,#1c2033);--card-foreground:var(--foreground);--muted:light-dark(#e8eaf2,#282d45);--muted-foreground:light-dark(#64677d,#a8adc5);--border:light-dark(#d8dae5,#373c56);--input:var(--border);--primary:light-dark(#4f46b5,#a5adff);--primary-foreground:light-dark(#ffffff,#17192b);--accent:light-dark(#e8e8fa,#303655);--accent-foreground:var(--foreground);--ring:#a5adff;--viz-series-1:light-dark(#b87917,#d69a32);--viz-series-2:light-dark(#5850ad,#a5adff);--viz-series-4:light-dark(#795117,#faf0d6)}
+:root{--background:light-dark(#f3f4f6,#121421);--foreground:light-dark(#292b40,#e8e9f2);--card:light-dark(#ffffff,#1c2033);--card-foreground:var(--foreground);--muted:light-dark(#e8eaf2,#282d45);--muted-foreground:light-dark(#64677d,#a8adc5);--border:light-dark(#d8dae5,#373c56);--input:var(--border);--primary:light-dark(#4f46b5,#a5adff);--primary-foreground:light-dark(#ffffff,#17192b);--accent:light-dark(#e8e8fa,#303655);--accent-foreground:var(--foreground);--ring:#a5adff;--viz-series-1:light-dark(#b87917,#d69a32);--viz-series-2:light-dark(#52788d,#90afbf);--viz-series-4:light-dark(#795117,#faf0d6)}
 #revolucion{font-family:Inter,Segoe UI,Arial,sans-serif!important;line-height:1.5}
 #revolucion h1{color:var(--foreground);font-weight:650;letter-spacing:-.035em}
 #revolucion h2,#revolucion h3{font-weight:600;letter-spacing:-.018em}
@@ -1281,7 +1281,7 @@ html&gt;body{padding:0}#revolucion #rcut{height:390px}#revolucion .r-cut-details
 @media(max-width:750px){#revolucion .interval-column,#revolucion .riemann-card{border-left:0!important}#revolucion{padding:16px!important}}
 &lt;/style&gt;&lt;style&gt;
 #revolucion .form-label,#revolucion .form-check,#revolucion .form-select,#revolucion .region-options,#revolucion .btn,#revolucion button,#revolucion summary,#revolucion #rmethods button,#revolucion #rdirections button,#revolucion .segmented button{font-family:Segoe UI,Arial,sans-serif!important}
-&lt;/style&gt;&lt;style&gt;#revolucion #rangleout{display:none!important}&lt;/style&gt;&lt;/head&gt;
+&lt;/style&gt;&lt;style&gt;#revolucion #rangleout{display:none!important}&lt;/style&gt;&lt;style&gt;#revolucion .work-controls .form-label{margin:0!important}#revolucion .work-controls .viz-controls,#revolucion .work-controls .viz-row{gap:8px!important}#revolucion .work-controls .r-guide-step{margin-bottom:8px!important}#revolucion .work-controls .form-control{min-height:38px!important}#revolucion .work-controls .setup-grid&gt;section{padding-bottom:12px!important}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;div id=&quot;revolucion&quot;&gt;
 &lt;span class=&quot;text-small&quot;&gt;Laboratorio de Cálculo Integral&lt;/span&gt;
@@ -2018,7 +2018,38 @@ root.addEventListener(&#x27;keydown&#x27; ,e=&gt;{if(e.key===&#x27;Enter&#x27;)u
 })();
 &lt;/script&gt;
 
-&lt;/body&gt;
+&lt;style&gt;
+#revolucion{max-width:1800px!important;padding:18px!important}
+#revolucion .workbench{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+#revolucion .work-controls{min-width:0;border-right:1px solid var(--border);padding-right:18px}
+#revolucion .work-plots{min-width:0}
+#revolucion .work-controls .setup-grid,#revolucion .work-controls .configuration-grid,#revolucion .work-controls .method-axis-grid{display:block!important}
+#revolucion .work-controls .setup-grid&gt;section,#revolucion .work-controls .method-axis-grid&gt;section{padding:0 0 16px!important;border:0!important}
+#revolucion .work-controls .region-options{padding:0;margin:0 0 16px;gap:8px;font-size:13px}
+#revolucion .work-controls .axis-column&gt;.viz-row{display:grid!important;grid-template-columns:minmax(0,1fr) 80px!important;gap:8px!important}
+#revolucion .work-controls #rgo{grid-column:1/-1;width:100%}
+#revolucion .work-controls .direction-field,#revolucion .work-controls .axis-menu{width:100%!important;max-width:none!important}
+#revolucion .work-plots .r-views,#revolucion .work-plots .r-bottom{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:0!important;align-items:stretch!important}
+#revolucion .work-plots .r-bottom{margin-top:14px!important}
+#revolucion .view-options{border:1px solid var(--border);padding:0 12px;margin:12px 0}
+#revolucion .view-options&gt;summary{padding:12px 0;font-size:14px;font-weight:600}
+#revolucion .view-options .riemann-card{border:0!important;padding:10px 0!important}
+#revolucion .view-options .riemann-card .r-guide-step&gt;span{display:none}
+#revolucion .work-plots #rvalues .symbolic-row{grid-template-columns:95px minmax(0,1fr);gap:8px;padding:12px 0}
+#revolucion .work-controls #rkeyboard{position:fixed;bottom:12px;left:3%;width:94%;box-sizing:border-box;z-index:50;background:var(--card);box-shadow:0 4px 24px #0003}
+@media(max-width:1000px){#revolucion .workbench{grid-template-columns:1fr}#revolucion .work-controls{border-right:0;padding-right:0}#revolucion .work-controls .setup-grid{display:grid!important;grid-template-columns:1fr 1fr!important}#revolucion .work-controls .method-axis-grid{display:grid!important;grid-template-columns:1fr 1fr!important}}
+@media(max-width:620px){#revolucion .work-plots .r-views,#revolucion .work-plots .r-bottom,#revolucion .work-controls .setup-grid,#revolucion .work-controls .method-axis-grid{grid-template-columns:1fr!important}}
+&lt;/style&gt;&lt;script&gt;
+(()=&gt;{const root=document.getElementById(&#x27;revolucion&#x27;),views=root.querySelector(&#x27;.r-views&#x27;),bottom=root.querySelector(&#x27;.r-bottom&#x27;);
+const between=[];let node=views.nextElementSibling;while(node&amp;&amp;node!==bottom){between.push(node);node=node.nextElementSibling;}
+const layout=document.createElement(&#x27;div&#x27;);layout.className=&#x27;workbench&#x27;;const controls=document.createElement(&#x27;aside&#x27;);controls.className=&#x27;work-controls&#x27;;controls.setAttribute(&#x27;aria-label&#x27;,&#x27;Funciones y configuración&#x27;);const plots=document.createElement(&#x27;main&#x27;);plots.className=&#x27;work-plots&#x27;;
+root.querySelector(&#x27;.app-header&#x27;).after(layout);layout.append(controls,plots);
+for(const selector of [&#x27;.setup-grid&#x27;,&#x27;#rkeyboard&#x27;,&#x27;.configuration-grid&#x27;])controls.append(root.querySelector(selector));
+const options=document.createElement(&#x27;details&#x27;);options.className=&#x27;view-options&#x27;;const summary=document.createElement(&#x27;summary&#x27;);summary.textContent=&#x27;Vista y cortes&#x27;;options.append(summary);
+const riemann=root.querySelector(&#x27;.riemann-card&#x27;);const error=root.querySelector(&#x27;#rerror&#x27;);controls.append(error);options.append(riemann);
+for(const item of between){if(item.tagName===&#x27;HR&#x27;)item.remove();else options.append(item);}
+plots.append(views,options,bottom);options.addEventListener(&#x27;toggle&#x27;,()=&gt;window.dispatchEvent(new Event(&#x27;resize&#x27;)));window.dispatchEvent(new Event(&#x27;resize&#x27;));
+})();&lt;/script&gt;&lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
 </body>
