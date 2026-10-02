@@ -1335,7 +1335,7 @@ function setMethod(value){stopRotation();method=value;syncAxis();update();if(val
 function methodUI(){el(&#x27;viewcontrol&#x27;).hidden=isShell();const cut=el(&#x27;cut&#x27;).closest(&#x27;section&#x27;);if(cut){cut.querySelector(&#x27;h3&#x27;).textContent=isShell()?&#x27;Capa separada del sólido&#x27;:&#x27;Disco o arandela en 3D&#x27;;cut.querySelector(&#x27;.text-small&#x27;).textContent=isShell()?&#x27;La capa es un tubo delgado: ρ indica el radio, h la altura y Δ el espesor radial.&#x27;:&#x27;El corte se muestra en perspectiva: R mide el radio exterior, r el hueco y Δ el espesor entre sus caras.&#x27;;}for(const button of el(&#x27;methods&#x27;).querySelectorAll(&#x27;button&#x27;)){const selected=button.dataset.method===method;button.setAttribute(&#x27;aria-pressed&#x27;,String(selected));button.classList.toggle(&#x27;selected&#x27;,selected);}el(&#x27;methodhelp&#x27;).textContent=isShell()?&#x27;Capas: los cortes son paralelos al eje. El radio es la distancia a la recta de giro; la altura es la distancia entre las funciones. Usa un intervalo a un solo lado del eje para no contar volumen dos veces.&#x27;:method===&#x27;disks&#x27;?&#x27;Discos: cada corte llega hasta el eje de giro y no tiene hueco.&#x27;:&#x27;Arandelas: cada corte tiene radio exterior e interior. Si el interior es cero, ese corte es un disco.&#x27;;}
 function integrandAt(seg,x,c){if(isShell())return 2*Math.PI*Math.abs(x-c)*Math.abs(seg.f(x)-seg.g(x));const q=seg.radii(x);return Math.PI*(q.R*q.R-q.r*q.r);}
 function shellView(s,C,selected,only=false){
- const {ctx,w,h}=setup(only?&#x27;cut&#x27;:&#x27;solid&#x27;),dark=!only,fg=dark?&#x27;#f0f1f7&#x27;:C.fg,orange=&#x27;#d69a32&#x27;,cyan=only?&#x27;#7193a6&#x27;:&#x27;#7193a6&#x27;;
+ const {ctx,w,h}=setup(only?&#x27;cut&#x27;:&#x27;solid&#x27;),dark=false,fg=C.fg,orange=&#x27;#d69a32&#x27;,cyan=only?&#x27;#7193a6&#x27;:&#x27;#7193a6&#x27;;
  if(dark){ctx.fillStyle=&#x27;#111322&#x27;;ctx.fillRect(0,0,w,h);}
  const yaw=(only?-32:+el(&#x27;yaw&#x27;).value)*Math.PI/180,pitch=(only?38:Math.max(28,+el(&#x27;pitch&#x27;).value))*Math.PI/180,sweep=(only?360:+el(&#x27;angle&#x27;).value)*Math.PI/180;
  const low=p=&gt;Math.min(p.segment.f(p.x),p.segment.g(p.x)),high=p=&gt;Math.max(p.segment.f(p.x),p.segment.g(p.x));
@@ -1501,7 +1501,7 @@ function draw(animationOnly=false){if(!animationOnly)refreshMathFields();if(!sta
  }
  if(!animationOnly)for(const label of Array.from(el(&#x27;profile&#x27;).querySelectorAll(&#x27;text&#x27;))){const box=label.getBBox(),fo=document.createElementNS(&#x27;http://www.w3.org/2000/svg&#x27;,&#x27;foreignObject&#x27;);fo.setAttribute(&#x27;x&#x27;,box.x-6);fo.setAttribute(&#x27;y&#x27;,box.y-2);fo.setAttribute(&#x27;width&#x27;,Math.max(36,box.width+12));fo.setAttribute(&#x27;height&#x27;,26);const span=document.createElement(&#x27;div&#x27;);span.style.fontSize=&#x27;12px&#x27;;try{tex(span,/[=]/.test(label.textContent)?math.parse(normalize(label.textContent)).toTex():mathCaption(label.textContent));}catch{tex(span,mathCaption(label.textContent));}fo.append(span);label.replaceWith(fo);}
  if(isShell()){tex(el(&#x27;angleout&#x27;),el(&#x27;angle&#x27;).value+&#x27;^{\\circ}&#x27;);shellView(s,C,q);if(!animationOnly)shellResults(s,q,C);return;}
- const savedSolidColors={...C};Object.assign(C,{bg:&#x27;#111322&#x27;,fg:&#x27;#e0e2ed&#x27;,line:&#x27;#3b3e59&#x27;,outer:&#x27;#d69a32&#x27;,inner:&#x27;#7193a6&#x27;,curve:&#x27;#ffffff&#x27;});
+ const savedSolidColors={...C};Object.assign(C,{outer:&#x27;#c18b3c&#x27;,inner:&#x27;#7193a6&#x27;,curve:C.fg});
  const {ctx,w,h}=setup(&#x27;solid&#x27;),yaw=+el(&#x27;yaw&#x27;).value*Math.PI/180,pitch=+el(&#x27;pitch&#x27;).value*Math.PI/180;
  ctx.fillStyle=C.bg;ctx.fillRect(0,0,w,h);
  const xmin=Math.min(0,s.a),xmax=Math.max(0,s.b),ymin=Math.min(-s.max,-s.c),ymax=Math.max(s.max,-s.c),midX=(xmin+xmax)/2,midY=(ymin+ymax)/2;
@@ -2049,7 +2049,33 @@ const options=document.createElement(&#x27;details&#x27;);options.className=&#x2
 const riemann=root.querySelector(&#x27;.riemann-card&#x27;);const error=root.querySelector(&#x27;#rerror&#x27;);controls.append(error);options.append(riemann);
 for(const item of between){if(item.tagName===&#x27;HR&#x27;)item.remove();else options.append(item);}
 plots.append(views,options,bottom);options.addEventListener(&#x27;toggle&#x27;,()=&gt;window.dispatchEvent(new Event(&#x27;resize&#x27;)));window.dispatchEvent(new Event(&#x27;resize&#x27;));
-})();&lt;/script&gt;&lt;/body&gt;
+})();&lt;/script&gt;&lt;style id=&quot;warm-lab-design&quot;&gt;
+:root{--background:light-dark(#f3f1eb,#192327);--foreground:light-dark(#263b40,#e0e9e8);--card:light-dark(#fffefa,#202e32);--muted:light-dark(#e9e7df,#2c3b3f);--muted-foreground:light-dark(#6b7776,#a9bab9);--border:light-dark(#d7ddd7,#3a5054);--primary:light-dark(#275d66,#9bc8cc);--primary-foreground:light-dark(#fffefa,#172e32);--accent:light-dark(#e0ecea,#304b50);--ring:#7193a6;--viz-series-1:light-dark(#bd8739,#d6a45b);--viz-series-4:light-dark(#715127,#f3d6a4)}
+body{background:var(--background)!important}
+#revolucion{padding:24px!important;font-family:Arial,Helvetica,sans-serif!important}
+#revolucion .app-header{border-bottom:0!important;margin-bottom:26px!important;padding:6px 0 16px!important}
+#revolucion .app-header h1{font-size:29px!important;font-weight:600;letter-spacing:-1px;color:var(--foreground)}
+#revolucion .app-header h1:before{content:&#x27;&#x27;;display:inline-block;width:6px;height:25px;margin-right:12px;background:var(--primary);border-radius:3px;vertical-align:-3px}
+#revolucion .workbench{gap:26px}
+#revolucion .work-controls{padding-right:22px;border-color:var(--border)}
+#revolucion .r-guide-step&gt;span{color:var(--primary)!important;font-size:12px!important;font-weight:700!important}
+#revolucion .r-guide-step h2{font-size:15px!important;letter-spacing:.1px}
+#revolucion .work-controls .setup-grid&gt;section,#revolucion .work-controls .method-axis-grid&gt;section{padding-bottom:20px!important}
+#revolucion .form-control,#revolucion .form-select,#revolucion .math-entry,#revolucion button,#revolucion .btn,#revolucion summary{border-radius:7px!important}
+#revolucion .form-control,#revolucion .form-select,#revolucion .math-entry{border-color:var(--border)!important}
+#revolucion .form-control:focus,#revolucion .form-select:focus{outline:2px solid var(--ring);outline-offset:2px}
+#revolucion #rgo{border-radius:22px!important;min-height:42px;letter-spacing:.2px}
+#revolucion .r-views&gt;section,#revolucion .r-bottom&gt;section{border-radius:12px!important;border:1px solid var(--border)!important;padding:18px!important;background:var(--card)!important}
+#revolucion h3{font-size:16px!important;letter-spacing:-.2px;margin-bottom:12px!important}
+#revolucion #rsolid{border-radius:6px!important}
+#revolucion .view-options{border:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 4px;margin:17px 0;background:transparent}
+#revolucion .view-options&gt;summary{color:var(--primary);font-size:13px;padding:13px 0}
+#revolucion #rvalues .symbolic-name{font-size:12px;color:var(--muted-foreground)}
+#revolucion #rvalues .symbolic-row:last-child{background:var(--accent);padding:16px 12px;border-radius:8px;margin-top:8px}
+#revolucion .header-tools summary,#revolucion .header-tools select{background:transparent!important;border-color:var(--border)!important}
+#revolucion .math-entry .katex{font-family:KaTeX_Main,serif}
+@media(max-width:620px){#revolucion{padding:14px!important}#revolucion .app-header h1{font-size:24px!important}}
+&lt;/style&gt;&lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
 </body>
